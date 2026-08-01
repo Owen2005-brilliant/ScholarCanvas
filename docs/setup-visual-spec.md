@@ -44,4 +44,3 @@ Open rails, lists, field groups, and one purposeful preview frame are preferred 
 ## Required visible states
 
 The desktop concept covers Welcome, Profile editing, Content editing, large Student/Researcher previews, and successful Review & Export. The mobile concept covers Welcome, Profile, Content, Preview, folder-write fallback, and export success at phone widths.
-
