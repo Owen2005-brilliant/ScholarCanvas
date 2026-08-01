@@ -42,7 +42,7 @@ ScholarCanvas 是一个面向学生与研究者的双语、配置驱动学术个
 
 ## 预览
 
-在线 Demo：[https://owen2005-brilliant.github.io/ScholarCanvas/](https://owen2005-brilliant.github.io/ScholarCanvas/)。
+在线 Demo（虚拟人物，仅做展示）：[https://owen2005-brilliant.github.io/ScholarCanvas/](https://owen2005-brilliant.github.io/ScholarCanvas/)。
 
 ![ScholarCanvas Student Mode 桌面预览](docs/screenshots/student-mode-desktop.png)
 
