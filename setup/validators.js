@@ -53,6 +53,36 @@
     return { valid: true };
   }
 
+  function shareImageFile(file) {
+    if (!file) return { valid: true };
+    const allowed = new Set(["image/png", "image/jpeg", "image/webp", "image/svg+xml"]);
+    if (!allowed.has(file.type)) return { valid: false, code: "type", message: message("链接分享封面必须是 PNG、JPG、WebP 或 SVG 文件。", "Link preview cover must be a PNG, JPG, WebP, or SVG file.") };
+    if (file.size > 5 * 1024 * 1024) return { valid: false, code: "size", message: message("链接分享封面不能超过 5MB。", "Link preview cover must be 5MB or smaller.") };
+    return { valid: true };
+  }
+
+  function isValidIsoDate(value) {
+    const input = String(value || "");
+    const match = input.match(/^(\d{4})-(\d{2})-(\d{2})$/);
+    if (!match) return false;
+    const year = Number(match[1]);
+    const month = Number(match[2]);
+    const day = Number(match[3]);
+    const date = new Date(year, month - 1, day);
+    return date.getFullYear() === year && date.getMonth() === month - 1 && date.getDate() === day;
+  }
+
+  function isValidShareImagePath(value) {
+    const input = String(value || "").trim();
+    if (!input || !isSafeUrl(input, { allowRelative: true })) return false;
+    try {
+      const path = /^https:/i.test(input) ? new URL(input).pathname : input.split(/[?#]/)[0];
+      return /\.(?:png|jpe?g|webp|svg)$/i.test(path);
+    } catch (_error) {
+      return false;
+    }
+  }
+
   function addError(errors, path, zh, en, detail) {
     if (errors.some((error) => error.path === path)) return;
     errors.push({ path, message: message(zh, en), detail: detail || "" });
@@ -87,10 +117,12 @@
     if (!repositoryPattern.test(String(state.site && state.site.repositoryName || ""))) addError(errors, "site.repositoryName", "仓库名称包含不支持的字符。", "Repository name contains unsupported characters.");
     if (state.site && state.site.customUrl && !isValidSiteUrl(state.site.customUrl)) addError(errors, "site.customUrl", "自定义站点地址必须是完整的 HTTPS URL。", "Custom site URL must be a complete HTTPS URL.");
     if (!/^#[0-9a-f]{6}$/i.test(String(state.site && state.site.accentColor || ""))) addError(errors, "site.accentColor", "强调色必须使用六位十六进制格式，例如 #F59E0B。", "Accent color must use six-digit hexadecimal format, such as #F59E0B.");
-    if (!/^\d{4}-\d{2}-\d{2}$/.test(String(state.site && state.site.lastUpdated || ""))) addError(errors, "site.lastUpdated", "最后更新日期必须使用 YYYY-MM-DD。", "Last updated must use YYYY-MM-DD.");
+    if (!isValidIsoDate(state.site && state.site.lastUpdated)) addError(errors, "site.lastUpdated", "网站更新时间无效，请选择一个有效日期。", "The website update date is invalid. Choose a valid date.");
     ["seoTitle", "seoDescription"].forEach((key) => ["zh", "en"].forEach((language) => {
-      if (!String(state.site && state.site[key] && state.site[key][language] || "").trim()) addError(errors, `site.${key}.${language}`, "请填写这个 SEO 必填项。", "Enter this required SEO field.");
+      if (!String(state.site && state.site[key] && state.site[key][language] || "").trim()) addError(errors, `site.${key}.${language}`, key === "seoTitle" ? "搜索结果标题不能为空。" : "搜索结果简介不能为空。", key === "seoTitle" ? "Search result title cannot be empty." : "Search result description cannot be empty.");
     }));
+    if (!isValidShareImagePath(state.site && state.site.shareImage)) addError(errors, "site.shareImage", "链接分享封面路径无效。", "The link preview cover path is invalid.");
+    if (state.shareImageError && state.shareImageError.zh && state.shareImageError.en) addError(errors, "shareImageFile", state.shareImageError.zh, state.shareImageError.en);
 
     const interestIds = new Set();
     (state.profile && state.profile.interests || []).forEach((interest, index) => {
@@ -190,6 +222,9 @@
     isValidDate,
     avatarFile,
     cvFile,
+    shareImageFile,
+    isValidIsoDate,
+    isValidShareImagePath,
     validateState,
     validateStep,
     validateDraftDocument,

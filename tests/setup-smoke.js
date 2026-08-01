@@ -34,6 +34,18 @@
     validStudent.profile.email = "test@example.com";
     validStudent.site.githubUsername = "test-user";
     validStudent.site.repositoryName = "ScholarCanvas";
+    namespace.seo.syncAutomatic(validStudent);
+    const seoStudent = namespace.stateUtils.deepClone(validStudent);
+    seoStudent.profile.name = { zh: "张辰阳", en: "Chenyang Zhang" };
+    seoStudent.profile.identity = { zh: "华东师范大学本科生", en: "Undergraduate Student at ECNU" };
+    seoStudent.profile.school = { zh: "华东师范大学", en: "East China Normal University" };
+    seoStudent.profile.affiliation = { zh: "计算机科学与技术学院", en: "School of Computer Science and Technology" };
+    seoStudent.profile.interests = [
+      { id: "llm-agents", label: { zh: "大语言模型智能体", en: "LLM agents" }, description: { zh: "", en: "" } },
+      { id: "recommender-systems", label: { zh: "推荐系统", en: "recommender systems" }, description: { zh: "", en: "" } },
+      { id: "computer-vision", label: { zh: "计算机视觉", en: "computer vision" }, description: { zh: "", en: "" } }
+    ];
+    namespace.seo.syncAutomatic(seoStudent);
 
     safe("initializer foundation loads in a browser", () => Boolean(namespace.store && namespace.serializer && namespace.exporter && namespace.importer));
     safe("schema defines seven ordered steps", () => namespace.schema.steps.length === 7 && namespace.schema.steps[0].id === "welcome" && namespace.schema.steps[6].id === "review");
@@ -66,6 +78,158 @@
     safe("project can be added and removed", () => { namespace.store.replace(student); const before = namespace.store.get().content.projects.length; namespace.store.addItem("projects"); namespace.store.removeItem("projects", before); return namespace.store.get().content.projects.length === before; });
     safe("projects can be reordered", () => { namespace.store.replace(student); namespace.store.addItem("projects"); const first = namespace.store.get().content.projects[0].id; namespace.store.moveItem("projects", 0, 1); return namespace.store.get().content.projects[1].id === first; });
     safe("publication can be added", () => { namespace.store.replace(student); namespace.store.addItem("publications"); return namespace.store.get().content.publications.length === 1; });
+    safe("SEO advanced settings are collapsed by default", () => {
+      const view = namespace.components.brandingForm.renderWebsite(student);
+      return view.querySelector("#setup-seo-advanced-panel").hidden;
+    });
+    safe("SEO disclosure button exposes correct aria-expanded state", () => {
+      const view = namespace.components.brandingForm.renderWebsite(student);
+      const toggle = view.querySelector('[data-action="toggle-seo-advanced"]');
+      return toggle.tagName === "BUTTON" && toggle.getAttribute("aria-expanded") === "false" && toggle.getAttribute("aria-controls") === "setup-seo-advanced-panel";
+    });
+    safe("SEO advanced settings render expanded and collapsed states", () => {
+      const value = namespace.stateUtils.deepClone(student);
+      value.advancedSeoExpanded = true;
+      const open = !namespace.components.brandingForm.renderWebsite(value).querySelector("#setup-seo-advanced-panel").hidden;
+      value.advancedSeoExpanded = false;
+      const closed = namespace.components.brandingForm.renderWebsite(value).querySelector("#setup-seo-advanced-panel").hidden;
+      return open && closed;
+    });
+    safe("Chinese search title is generated from name and identity", () => seoStudent.site.seoTitle.zh === "张辰阳的个人主页｜华东师范大学本科生");
+    safe("English search title is generated from name and identity", () => seoStudent.site.seoTitle.en === "Chenyang Zhang | Undergraduate Student at ECNU");
+    safe("search title fallbacks avoid empty names and identities", () => {
+      const profile = namespace.stateUtils.deepClone(seoStudent.profile);
+      profile.name = { zh: "", en: "" };
+      profile.identity = { zh: "", en: "" };
+      const generated = namespace.seo.generate(profile);
+      return generated.titleZh === "我的学术主页" && generated.titleEn === "My Academic Homepage";
+    });
+    safe("named search title fallbacks omit missing identity cleanly", () => {
+      const profile = namespace.stateUtils.deepClone(seoStudent.profile);
+      profile.identity = { zh: "", en: "" };
+      const generated = namespace.seo.generate(profile);
+      return generated.titleZh === "张辰阳的个人主页" && generated.titleEn === "Chenyang Zhang | Academic Homepage";
+    });
+    safe("Chinese search description includes research interests", () => seoStudent.site.seoDescription.zh.includes("大语言模型智能体、推荐系统、计算机视觉方向") && !seoStudent.site.seoDescription.zh.includes("[object Object]"));
+    safe("English search description includes research interests", () => seoStudent.site.seoDescription.en.includes("LLM agents, recommender systems, and computer vision") && !seoStudent.site.seoDescription.en.includes("[object Object]"));
+    safe("search descriptions fall back cleanly without interests", () => {
+      const profile = namespace.stateUtils.deepClone(seoStudent.profile);
+      profile.interests = [];
+      const generated = namespace.seo.generate(profile);
+      return generated.descriptionZh === "张辰阳的个人学术主页，展示科研项目、论文与个人经历。" && generated.descriptionEn === "Chenyang Zhang's academic homepage, featuring research, publications, projects, and experience.";
+    });
+    safe("keywords are generated from profile fields and stable base terms", () => seoStudent.site.seoKeywords.startsWith("张辰阳, Chenyang Zhang, 华东师范大学") && seoStudent.site.seoKeywords.endsWith("academic homepage, student portfolio, researcher, bilingual"));
+    safe("generated keywords are de-duplicated in stable order", () => {
+      const profile = namespace.stateUtils.deepClone(seoStudent.profile);
+      profile.school.en = "Chenyang Zhang";
+      profile.interests.push({ label: { zh: "推荐系统", en: "LLM agents" } });
+      const keywords = namespace.seo.generate(profile).keywords.split(", ");
+      return keywords.filter((value) => value === "Chenyang Zhang").length === 1 && keywords.filter((value) => value === "推荐系统").length === 1 && keywords.filter((value) => value === "LLM agents").length === 1;
+    });
+    safe("profile changes update automatic search fields", () => {
+      namespace.store.replace(seoStudent);
+      namespace.store.update("profile.name.zh", "李明");
+      return namespace.store.get().site.seoTitle.zh.startsWith("李明的个人主页");
+    });
+    safe("editing a search field switches it to custom", () => {
+      namespace.store.replace(seoStudent);
+      namespace.store.setSeoCustom("titleZh", "我的自定义标题");
+      return namespace.store.get().seoModes.titleZh === "custom" && namespace.store.get().site.seoTitle.zh === "我的自定义标题";
+    });
+    safe("custom search fields survive later profile changes", () => {
+      namespace.store.update("profile.name.zh", "不会覆盖的名字");
+      return namespace.store.get().site.seoTitle.zh === "我的自定义标题";
+    });
+    safe("custom search fields can reset to automatic", () => {
+      namespace.store.resetSeoAutomatic("titleZh");
+      return namespace.store.get().seoModes.titleZh === "auto" && namespace.store.get().site.seoTitle.zh.startsWith("不会覆盖的名字的个人主页");
+    });
+    safe("final site export excludes initializer-only SEO state", () => {
+      const source = namespace.serializer.sourceFile("site", namespace.serializer.buildSite(seoStudent, {}));
+      return !source.includes("seoModes") && !source.includes("seoOverrides") && !source.includes("advancedSeoExpanded") && !source.includes("shareImageFile") && !source.includes("useManualDate");
+    });
+    safe("default link preview cover uses the bundled ScholarCanvas asset", () => student.site.shareImage === "assets/illustrations/share-card.svg");
+    safe("custom link preview cover uses its local Object URL", () => {
+      namespace.store.replace(seoStudent);
+      const file = new File(["cover"], "cover.webp", { type: "image/webp" });
+      const url = URL.createObjectURL(file);
+      namespace.store.setRuntimeFile("shareImage", file, url);
+      namespace.store.update("site.shareImage", namespace.serializer.shareImageExportPath({ shareImage: file }));
+      const preview = namespace.components.brandingForm.shareCover(namespace.store.get()).querySelector("img").src === url;
+      namespace.store.clearRuntimeFiles();
+      return preview;
+    });
+    safe("unsupported link preview cover formats are rejected", () => !namespace.validators.shareImageFile(new File(["bad"], "cover.gif", { type: "image/gif" })).valid);
+    safe("oversized link preview cover files are rejected", () => !namespace.validators.shareImageFile(new File([new Uint8Array(5 * 1024 * 1024 + 1)], "cover.png", { type: "image/png" })).valid);
+    safe("replaced link preview Object URLs are revoked", () => {
+      const original = URL.revokeObjectURL;
+      const revoked = [];
+      try {
+        URL.revokeObjectURL = (url) => revoked.push(url);
+        namespace.store.replace(seoStudent);
+        namespace.store.setRuntimeFile("shareImage", new File(["one"], "one.png", { type: "image/png" }), "blob:cover-one");
+        namespace.store.setRuntimeFile("shareImage", new File(["two"], "two.png", { type: "image/png" }), "blob:cover-two");
+        namespace.store.clearRuntimeFiles();
+        return revoked.includes("blob:cover-one") && revoked.includes("blob:cover-two");
+      } finally {
+        URL.revokeObjectURL = original;
+      }
+    });
+    safe("new configurations use the local calendar date", () => {
+      const date = new Date(2026, 0, 2, 23, 58);
+      return namespace.seo.localDate(date) === "2026-01-02" && namespace.stateUtils.createMinimal("student").site.lastUpdated === namespace.seo.localDate();
+    });
+    safe("manual website dates are preserved and can return to automatic", () => {
+      const value = namespace.stateUtils.createMinimal("student");
+      namespace.seo.setManualDate(value, true);
+      value.site.lastUpdated = "2025-12-31";
+      namespace.seo.syncAutomatic(value);
+      const preserved = value.site.lastUpdated === "2025-12-31";
+      namespace.seo.setManualDate(value, false);
+      return preserved && value.site.lastUpdated === value.automaticLastUpdated;
+    });
+    safe("collapsed search errors expose a concise summary action", () => {
+      const value = namespace.stateUtils.deepClone(seoStudent);
+      namespace.seo.setCustom(value, "titleZh", "");
+      value.advancedSeoExpanded = false;
+      const view = namespace.components.brandingForm.renderWebsite(value);
+      const summaryAction = view.querySelector('[data-action="open-seo-errors"]');
+      return Boolean(summaryAction && view.querySelector("#setup-seo-advanced-panel").hidden && summaryAction.textContent.includes("需要检查"));
+    });
+    safe("search error summary maps to the first focusable advanced field", () => {
+      const value = namespace.stateUtils.deepClone(seoStudent);
+      namespace.seo.setCustom(value, "titleZh", "");
+      value.advancedSeoExpanded = true;
+      const errors = namespace.seo.searchSharingErrors(namespace.validators.validateState(value));
+      const view = namespace.components.brandingForm.renderWebsite(value);
+      return errors[0].path === "site.seoTitle.zh" && Boolean(view.querySelector('[data-path="site.seoTitle.zh"]'));
+    });
+    safe("current v1 configuration imports without losing search values", () => {
+      const value = namespace.stateUtils.fromCurrentConfig(namespace.store.getSourceConfig());
+      const source = namespace.store.getSourceConfig().site.seo;
+      return value.site.seoTitle.zh === source.title.zh && value.site.seoDescription.en === source.description.en && value.seoModes.titleZh === "custom" && value.useManualDate;
+    });
+    safe("legacy drafts preserve existing search values without new mode fields", () => {
+      const legacy = namespace.stateUtils.deepClone(seoStudent);
+      delete legacy.seoModes;
+      delete legacy.seoOverrides;
+      delete legacy.useManualDate;
+      delete legacy.automaticLastUpdated;
+      legacy.site.seoTitle.zh = "旧草稿标题";
+      legacy.site.lastUpdated = "2024-03-02";
+      const parsed = namespace.importer.parseDraft(JSON.stringify({ format: "scholarcanvas-setup", version: 1, state: legacy }));
+      return parsed.valid && parsed.state.site.seoTitle.zh === "旧草稿标题" && parsed.state.seoModes.titleZh === "custom" && parsed.state.site.lastUpdated === "2024-03-02";
+    });
+    safe("drafts retain search modes, panel state, cover metadata, and date mode", () => {
+      const value = namespace.stateUtils.deepClone(seoStudent);
+      namespace.seo.setCustom(value, "titleEn", "Custom title");
+      value.advancedSeoExpanded = true;
+      value.shareImageFile = { name: "cover.png", type: "image/png", size: 10 };
+      value.useManualDate = true;
+      const saved = namespace.importer.draftDocument(value).state;
+      return saved.seoModes.titleEn === "custom" && saved.seoOverrides.titleEn === "Custom title" && saved.advancedSeoExpanded && saved.shareImageFile.name === "cover.png" && saved.useManualDate;
+    });
+    safe("SEO disclosure remains a native keyboard-operable button", () => namespace.components.brandingForm.renderWebsite(student).querySelector('[data-action="toggle-seo-advanced"]').tagName === "BUTTON");
 
     safe("HTTPS URL is accepted", () => namespace.validators.isSafeUrl("https://example.com"));
     safe("mailto URL is accepted", () => namespace.validators.isSafeUrl("mailto:test@example.com"));
@@ -113,6 +277,7 @@
     safe("unrelated JSON is rejected", () => !namespace.importer.parseDraft(JSON.stringify({ version: 1, state: {} })).valid);
     safe("file-system whitelist accepts data files", () => namespace.fileSystem.isAllowedPath("data/profile.js"));
     safe("file-system whitelist accepts generated avatar", () => namespace.fileSystem.isAllowedPath("assets/avatar/profile-avatar.webp"));
+    safe("file-system whitelist accepts generated link preview covers", () => namespace.fileSystem.isAllowedPath("assets/illustrations/share-card.jpg"));
     safe("file-system whitelist rejects source code", () => !namespace.fileSystem.isAllowedPath("src/app.js"));
     safe("file-system whitelist rejects traversal", () => !namespace.fileSystem.isAllowedPath("../data/profile.js"));
     await safeAsync("folder writer backs up and writes only approved files", async () => {
@@ -166,6 +331,7 @@
     });
     safe("reduced-motion media query is available", () => typeof window.matchMedia === "function" && typeof window.matchMedia("(prefers-reduced-motion: reduce)").matches === "boolean");
     safe("setup layout has a 360px overflow guard", () => Array.from(document.styleSheets).some((sheet) => { try { return Array.from(sheet.cssRules || []).some((rule) => String(rule.cssText).includes("max-width: 390px")); } catch (_error) { return false; } }));
+    safe("search and sharing controls have mobile single-column rules", () => Array.from(document.styleSheets).some((sheet) => { try { return Array.from(sheet.cssRules || []).some((rule) => String(rule.cssText).includes(".setup-share-cover") && String(rule.cssText).includes("grid-template-columns: minmax(0px, 1fr)")); } catch (_error) { return false; } }));
     safe("oversized CV fails validation", () => !namespace.validators.cvFile(new File([new Uint8Array(20 * 1024 * 1024 + 1)], "cv.pdf", { type: "application/pdf" })).valid);
 
     await safeAsync("localStorage draft saves and clears explicitly", async () => {
@@ -173,6 +339,14 @@
       const saved = namespace.importer.hasDraft() && (await namespace.importer.loadDraft()).valid;
       await namespace.importer.clearDraft();
       return saved && !namespace.importer.hasDraft();
+    });
+    await safeAsync("JSON drafts request a missing custom sharing cover safely", async () => {
+      const value = namespace.stateUtils.deepClone(seoStudent);
+      value.shareImageFile = { name: "cover.png", type: "image/png", size: 12 };
+      value.site.shareImage = "assets/illustrations/share-card.png";
+      const documentValue = namespace.importer.draftDocument(value);
+      const result = await namespace.importer.importDraftFile(new File([JSON.stringify(documentValue)], "draft.json", { type: "application/json" }));
+      return result.valid && result.state.advancedSeoExpanded && Boolean(result.state.shareImageError);
     });
 
     await safeAsync("dialog traps keyboard focus and restores the opener", async () => {
@@ -211,6 +385,25 @@
     await safeAsync("avatar and CV are omitted when not selected", async () => {
       const names = (await namespace.exporter.buildEntries(validStudent, {})).map((entry) => entry.name);
       return !names.some((name) => name.startsWith("assets/avatar/profile-avatar.")) && !names.includes("assets/files/cv.pdf");
+    });
+    await safeAsync("custom link preview cover is included in the ZIP entries", async () => {
+      const shareImage = new File(["cover"], "cover.jpeg", { type: "image/jpeg" });
+      const entries = await namespace.exporter.buildEntries(seoStudent, { shareImage });
+      const zip = await namespace.exporter.createZipBlob(entries);
+      const names = await namespace.exporter.readZipNames(zip);
+      return names.includes("assets/illustrations/share-card.jpg");
+    });
+    await safeAsync("link preview cover path matches the packaged file", async () => {
+      const shareImage = new File(["cover"], "cover.webp", { type: "image/webp" });
+      const runtime = { shareImage };
+      const expected = namespace.serializer.buildSite(seoStudent, runtime).seo.shareImage;
+      const entries = await namespace.exporter.buildEntries(seoStudent, runtime);
+      const packaged = entries.find((entry) => entry.name === expected);
+      return expected === "assets/illustrations/share-card.webp" && packaged && packaged.data === shareImage;
+    });
+    await safeAsync("default link preview cover is not redundantly packaged", async () => {
+      const names = (await namespace.exporter.buildEntries(seoStudent, {})).map((entry) => entry.name);
+      return !names.some((name) => /^assets\/illustrations\/share-card\.(?:png|jpg|webp)$/.test(name));
     });
     safe("CRC32 matches the standard test vector", () => namespace.exporter.crc32(new TextEncoder().encode("123456789")) === 0xcbf43926);
 

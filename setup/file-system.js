@@ -8,7 +8,9 @@
   ]);
 
   function isAllowedPath(path) {
-    return exactPaths.has(path) || /^assets\/avatar\/profile-avatar\.(?:png|jpg|webp|svg)$/.test(path);
+    return exactPaths.has(path) ||
+      /^assets\/avatar\/profile-avatar\.(?:png|jpg|webp|svg)$/.test(path) ||
+      /^assets\/illustrations\/share-card\.(?:png|jpg|webp|svg)$/.test(path);
   }
 
   function supported() {

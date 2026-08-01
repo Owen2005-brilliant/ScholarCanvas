@@ -24,6 +24,10 @@ On **Review & Export**, **Preview in new tab** opens the current form through a 
 
 For GitHub Pages, enter the GitHub username and repository name. `username.github.io` produces a root URL; other repositories produce `https://username.github.io/repository/`. A complete custom HTTPS URL overrides the Pages URL. Canonical, robots, sitemap, Open Graph, and JSON-LD inputs use the same generated address.
 
+Search result titles, descriptions, keywords, and the update date are generated automatically from the bilingual profile and research interests. They do not appear in the homepage body. Most people can leave the compact **Search and sharing** card untouched; **Show advanced settings** lets you customize individual values, then reset any field to automatic generation without affecting other overrides.
+
+The default ScholarCanvas sharing cover is ready immediately. You can upload a PNG, JPG, WebP, or SVG up to 5MB and preview it locally. The image is never uploaded: it is stored with a browser draft when supported and exported as `assets/illustrations/share-card.<ext>`. Returning to the default cover uses the existing bundled SVG without packaging a duplicate.
+
 ## 5. Save or move a draft
 
 **Save draft in this browser** writes setup JSON to `localStorage` and selected files to IndexedDB only after confirmation. **Export draft** downloads `scholarcanvas-setup.json`; **Import draft** parses JSON as data and never runs it as code. **Clear local draft** removes the saved state and browser-stored files after confirmation.
@@ -32,13 +36,13 @@ Browser storage is tied to the current origin. A draft saved from `file://` is s
 
 ## 6. Export a configuration bundle
 
-**Download ScholarCanvas configuration bundle** creates `scholarcanvas-config.zip` in the browser. It contains ten `data/*.js` files, `robots.txt`, `sitemap.xml`, `SETUP_RESULT.md`, and the selected avatar/CV when present. The built-in ZIP writer uses the uncompressed ZIP format, has no third-party dependency, and yields between files to keep the interface responsive.
+**Download ScholarCanvas configuration bundle** creates `scholarcanvas-config.zip` in the browser. It contains ten `data/*.js` files, `robots.txt`, `sitemap.xml`, `SETUP_RESULT.md`, and the selected avatar, CV, or custom sharing cover when present. The built-in ZIP writer uses the uncompressed ZIP format, has no third-party dependency, and yields between files to keep the interface responsive.
 
 Extract the bundle and replace the matching paths in your ScholarCanvas repository. Then run `python3 tools/validate_config.py` if Python is available. Python is a maintainer validation aid; the homepage and initializer do not require it.
 
 ## 7. Write directly to a folder
 
-Current Chrome and Edge can show **Choose a ScholarCanvas folder and apply configuration** through the File System Access API. Select the repository root containing `index.html`, `data/`, `src/`, and `styles/`. Before writing, the wizard displays the exact file list. Existing files are copied to `.backup/setup-YYYYMMDD-HHMMSS/`, and a strict whitelist prevents changes outside generated data, SEO files, avatar, and CV.
+Current Chrome and Edge can show **Choose a ScholarCanvas folder and apply configuration** through the File System Access API. Select the repository root containing `index.html`, `data/`, `src/`, and `styles/`. Before writing, the wizard displays the exact file list. Existing files are copied to `.backup/setup-YYYYMMDD-HHMMSS/`, and a strict whitelist prevents changes outside generated data, search/deployment files, avatar, CV, and custom sharing cover.
 
 Safari and Firefox do not currently expose this API. The ZIP path remains fully available and the wizard displays the fallback message instead of disabling setup.
 
@@ -51,7 +55,7 @@ Commit the replaced files, push to GitHub, and choose **Settings → Pages → G
 - No profile data, files, credentials, tokens, analytics, or OAuth requests are sent anywhere.
 - Draft import uses `JSON.parse`; the wizard contains no `eval`, `new Function`, or imported script execution.
 - Links reject unsafe protocols, preview messages validate source/origin/type/version/payload, and folder writes use an explicit path whitelist.
-- Object URLs are revoked when avatar files are replaced or cleared.
+- Object URLs are revoked when avatar or sharing-cover files are replaced or cleared.
 
 ## Browser compatibility
 

@@ -87,6 +87,14 @@
     return runtimeFiles && runtimeFiles.avatar ? `assets/avatar/profile-avatar.${avatarExtension(runtimeFiles.avatar)}` : "";
   }
 
+  function shareImageExtension(file) {
+    return avatarExtension(file);
+  }
+
+  function shareImageExportPath(runtimeFiles) {
+    return runtimeFiles && runtimeFiles.shareImage ? `assets/illustrations/share-card.${shareImageExtension(runtimeFiles.shareImage)}` : "";
+  }
+
   function bilingualLines(value) {
     return utils.splitLines(value).map((line) => {
       const parts = line.split("||").map((part) => part.trim());
@@ -95,8 +103,9 @@
     });
   }
 
-  function buildSite(state) {
+  function buildSite(state, runtimeFiles) {
     const siteUrl = computeSiteUrl(state.site);
+    const exportedShareImage = shareImageExportPath(runtimeFiles);
     return {
       mode: state.mode === "researcher" ? "researcher" : "student",
       defaultLanguage: state.language === "en" ? "en" : "zh",
@@ -111,9 +120,9 @@
         description: utils.deepClone(state.site.seoDescription),
         keywords: utils.splitTags(state.site.seoKeywords),
         siteUrl,
-        shareImage: state.site.shareImage || "assets/illustrations/share-card.svg"
+        shareImage: exportedShareImage || state.site.shareImage || namespace.seo.defaultShareImage
       },
-      lastUpdated: state.site.lastUpdated || new Date().toISOString().slice(0, 10)
+      lastUpdated: state.site.lastUpdated || namespace.seo.localDate()
     };
   }
 
@@ -238,7 +247,7 @@
 
   function buildPayload(state, runtimeFiles, options) {
     return {
-      site: buildSite(state),
+      site: buildSite(state, runtimeFiles || {}),
       profile: buildProfile(state, runtimeFiles || {}, options),
       news: buildNews(state),
       publications: buildPublications(state),
@@ -289,6 +298,8 @@
     computeSiteUrl,
     avatarExtension,
     avatarExportPath,
+    shareImageExtension,
+    shareImageExportPath,
     buildSite,
     buildProfile,
     buildPayload,

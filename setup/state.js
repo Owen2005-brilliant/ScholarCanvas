@@ -179,11 +179,11 @@
       defaultLanguage: "zh",
       defaultTheme: "system",
       accentColor: "#F59E0B",
-      seoTitle: { zh: "你的学术主页", en: "Your Academic Homepage" },
-      seoDescription: { zh: "一个使用 ScholarCanvas 创建的双语学术主页。", en: "A bilingual academic homepage created with ScholarCanvas." },
+      seoTitle: { zh: "", en: "" },
+      seoDescription: { zh: "", en: "" },
       seoKeywords: "academic homepage, student portfolio, researcher, bilingual",
-      shareImage: "assets/illustrations/share-card.svg",
-      lastUpdated: "2026-08-01",
+      shareImage: namespace.seo.defaultShareImage,
+      lastUpdated: namespace.seo.localDate(),
       mode
     };
   }
@@ -204,7 +204,7 @@
       content.awards.push(createItem("awards", 0));
       content.skills.push(createItem("skills", 0));
     }
-    return {
+    const state = {
       version: 1,
       mode: normalizedMode,
       language: "zh",
@@ -222,10 +222,18 @@
       collapsedItems: {},
       advancedItems: {},
       files: { avatar: null, cv: null },
+      seoModes: {},
+      seoOverrides: {},
+      advancedSeoExpanded: false,
+      shareImageFile: null,
+      shareImageError: null,
+      automaticLastUpdated: namespace.seo.localDate(),
+      useManualDate: false,
       dirty: false,
       draftSaved: false,
       exportStatus: "idle"
     };
+    return namespace.seo.initializeState(state, { forceMode: "auto", forceAutomaticDate: true });
   }
 
   function bilingualLines(items) {
@@ -278,6 +286,7 @@
     };
     state.activeModule = mode === "researcher" ? "publications" : "projects";
     state.files = { avatar: null, cv: null };
+    namespace.seo.initializeState(state, { forceMode: "custom", forceManualDate: true });
     state.dirty = false;
     return state;
   }
@@ -306,6 +315,13 @@
     imported.content = Object.assign(emptyContent(), incoming.content || {});
     schema.sectionKeys.forEach((key) => { if (!Array.isArray(imported.content[key])) imported.content[key] = []; });
     imported.files = { avatar: input && input.files && input.files.avatar || null, cv: input && input.files && input.files.cv || null };
+    imported.seoOverrides = Object.assign({}, incoming.seoOverrides || {});
+    imported.shareImageFile = incoming.shareImageFile && typeof incoming.shareImageFile === "object" ? incoming.shareImageFile : null;
+    namespace.seo.initializeState(imported, {
+      modes: incoming.seoModes,
+      overrides: incoming.seoOverrides,
+      forceManualDate: typeof incoming.useManualDate !== "boolean" && Boolean(incoming.site && incoming.site.lastUpdated)
+    });
     imported.version = 1;
     imported.dirty = true;
     return imported;
@@ -315,7 +331,7 @@
   let state = createMinimal("student");
   let originalState = deepClone(state);
   const listeners = new Set();
-  const runtimeFiles = { avatar: null, cv: null, avatarUrl: "" };
+  const runtimeFiles = { avatar: null, cv: null, shareImage: null, avatarUrl: "", shareImageUrl: "" };
 
   function notify(reason) {
     listeners.forEach((listener) => listener(state, reason || "update"));
@@ -331,11 +347,36 @@
 
   function update(path, value, options) {
     setPath(state, path, value);
+    if (String(path).startsWith("profile.")) namespace.seo.syncAutomatic(state);
     if (!options || options.dirty !== false) {
       state.dirty = true;
       state.draftSaved = false;
     }
     notify(options && options.reason || "field");
+    return state;
+  }
+
+  function setSeoCustom(key, value) {
+    if (!namespace.seo.setCustom(state, key, value)) return state;
+    state.dirty = true;
+    state.draftSaved = false;
+    notify("field");
+    return state;
+  }
+
+  function resetSeoAutomatic(key) {
+    if (!namespace.seo.resetAutomatic(state, key)) return state;
+    state.dirty = true;
+    state.draftSaved = false;
+    notify("field");
+    return state;
+  }
+
+  function setManualDate(enabled) {
+    namespace.seo.setManualDate(state, enabled);
+    state.dirty = true;
+    state.draftSaved = false;
+    notify("field");
     return state;
   }
 
@@ -454,10 +495,13 @@
 
   function setRuntimeFile(kind, file, objectUrl) {
     if (!Object.prototype.hasOwnProperty.call(runtimeFiles, kind)) return;
-    if (kind === "avatar" && runtimeFiles.avatarUrl && runtimeFiles.avatarUrl !== objectUrl) URL.revokeObjectURL(runtimeFiles.avatarUrl);
+    const urlKey = kind === "avatar" ? "avatarUrl" : kind === "shareImage" ? "shareImageUrl" : "";
+    if (urlKey && runtimeFiles[urlKey] && runtimeFiles[urlKey] !== objectUrl) URL.revokeObjectURL(runtimeFiles[urlKey]);
     runtimeFiles[kind] = file || null;
-    if (kind === "avatar") runtimeFiles.avatarUrl = objectUrl || "";
-    state.files[kind] = file ? { name: file.name, type: file.type, size: file.size } : null;
+    if (urlKey) runtimeFiles[urlKey] = objectUrl || "";
+    const metadata = file ? { name: file.name, type: file.type, size: file.size } : null;
+    if (kind === "shareImage") state.shareImageFile = metadata;
+    else state.files[kind] = metadata;
     state.dirty = true;
     state.draftSaved = false;
     notify("file");
@@ -465,9 +509,12 @@
 
   function clearRuntimeFiles() {
     if (runtimeFiles.avatarUrl) URL.revokeObjectURL(runtimeFiles.avatarUrl);
+    if (runtimeFiles.shareImageUrl) URL.revokeObjectURL(runtimeFiles.shareImageUrl);
     runtimeFiles.avatar = null;
     runtimeFiles.cv = null;
+    runtimeFiles.shareImage = null;
     runtimeFiles.avatarUrl = "";
+    runtimeFiles.shareImageUrl = "";
   }
 
   function subscribe(listener) {
@@ -482,6 +529,9 @@
     getRuntimeFiles: () => runtimeFiles,
     replace,
     update,
+    setSeoCustom,
+    resetSeoAutomatic,
+    setManualDate,
     chooseSource,
     setMode,
     setSection,

@@ -54,6 +54,7 @@
     const entries = Object.entries(files).map(([name, data]) => ({ name, data }));
     if (runtimeFiles && runtimeFiles.avatar) entries.push({ name: namespace.serializer.avatarExportPath(runtimeFiles), data: runtimeFiles.avatar });
     if (runtimeFiles && runtimeFiles.cv) entries.push({ name: "assets/files/cv.pdf", data: runtimeFiles.cv });
+    if (runtimeFiles && runtimeFiles.shareImage) entries.push({ name: namespace.serializer.shareImageExportPath(runtimeFiles), data: runtimeFiles.shareImage });
     return entries;
   }
 

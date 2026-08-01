@@ -54,6 +54,7 @@ REQUIRED_FILES = [
     "styles/dark.css",
     "styles/responsive.css",
     "setup/schema.js",
+    "setup/seo.js",
     "setup/state.js",
     "setup/validators.js",
     "setup/serializer.js",

@@ -33,7 +33,7 @@
 
   const copy = {
     productName: bilingual("ScholarCanvas 可视化初始化器", "ScholarCanvas Visual Setup"),
-    privacy: bilingual("所有信息、头像和简历均只在当前浏览器中处理。ScholarCanvas 不会将这些内容上传到服务器。", "All information, avatars, and CV files are processed only in this browser. ScholarCanvas never uploads them to a server."),
+    privacy: bilingual("所有信息、头像、简历和分享封面均只在当前浏览器中处理。ScholarCanvas 不会将这些内容上传到服务器。", "All information, avatars, CV files, and sharing covers are processed only in this browser. ScholarCanvas never uploads them to a server."),
     back: bilingual("上一步", "Back"),
     continue: bilingual("继续", "Continue"),
     finish: bilingual("完成", "Finish"),

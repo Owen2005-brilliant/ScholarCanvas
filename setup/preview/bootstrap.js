@@ -10,6 +10,24 @@
     return JSON.parse(JSON.stringify(value));
   }
 
+  function bodySignature(value) {
+    const payload = value || {};
+    const site = Object.assign({}, payload.site || {});
+    delete site.seo;
+    return JSON.stringify({
+      site,
+      profile: payload.profile,
+      news: payload.news,
+      publications: payload.publications,
+      projects: payload.projects,
+      experience: payload.experience,
+      awards: payload.awards,
+      skills: payload.skills,
+      teaching: payload.teaching,
+      service: payload.service
+    });
+  }
+
   function allowedOrigin(origin) {
     if (window.location.protocol === "file:") return origin === "null";
     return origin === window.location.origin;
@@ -67,11 +85,28 @@
     if (!window.SCHOLAR_CANVAS_SETUP.validators.validatePreviewPayload(payload)) return false;
     const value = clone(payload);
     applyRuntimeFiles(value, files);
+    const current = {
+      site: namespace.site,
+      profile: namespace.profile,
+      news: namespace.news,
+      publications: namespace.publications,
+      projects: namespace.projects,
+      experience: namespace.experience,
+      awards: namespace.awards,
+      skills: namespace.skills,
+      teaching: namespace.teaching,
+      service: namespace.service
+    };
+    const metadataOnly = Boolean(namespace.state && namespace.i18n && bodySignature(current) === bodySignature(value));
     ["site", "profile", "news", "publications", "projects", "experience", "awards", "skills", "teaching", "service"].forEach((key) => {
       namespace[key] = value[key];
     });
     if (!namespace.state || !namespace.renderer) {
       pending = { payload, files };
+      return true;
+    }
+    if (metadataOnly) {
+      namespace.i18n.applyMetadata(namespace.state.language);
       return true;
     }
     namespace.state.mode = value.site.mode === "researcher" ? "researcher" : "student";
@@ -111,5 +146,5 @@
   }, { once: true });
   window.addEventListener("beforeunload", revokeRuntimeObjectUrls, { once: true });
 
-  window.SCHOLAR_CANVAS_PREVIEW = { allowedOrigin, isValidMessage, applyPayload };
+  window.SCHOLAR_CANVAS_PREVIEW = { allowedOrigin, isValidMessage, applyPayload, bodySignature };
 })(window.SCHOLAR_CANVAS = window.SCHOLAR_CANVAS || {});

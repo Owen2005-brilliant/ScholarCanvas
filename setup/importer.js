@@ -11,6 +11,7 @@
       avatar: copy.files && copy.files.avatar || null,
       cv: copy.files && copy.files.cv || null
     };
+    copy.shareImageError = null;
     copy.dirty = false;
     copy.draftSaved = true;
     return copy;
@@ -48,7 +49,12 @@
 
   async function importDraftFile(file) {
     const text = await readTextFile(file);
-    return parseDraft(text);
+    const parsed = parseDraft(text);
+    if (parsed.valid && parsed.state.shareImageFile) {
+      parsed.state.shareImageError = namespace.schema.bilingual("请重新选择草稿中的自定义分享封面，或恢复默认封面。", "Re-select the custom sharing cover from this draft, or use the default cover.");
+      parsed.state.advancedSeoExpanded = true;
+    }
+    return parsed;
   }
 
   function exportDraft(state) {
@@ -75,7 +81,7 @@
     await new Promise((resolve, reject) => {
       const transaction = database.transaction(storeName, "readwrite");
       const store = transaction.objectStore(storeName);
-      ["avatar", "cv"].forEach((key) => {
+      ["avatar", "cv", "shareImage"].forEach((key) => {
         if (runtimeFiles && runtimeFiles[key]) store.put(runtimeFiles[key], key);
         else store.delete(key);
       });
@@ -87,13 +93,13 @@
 
   async function loadRuntimeFiles() {
     const database = await openDatabase();
-    if (!database) return { avatar: null, cv: null };
+    if (!database) return { avatar: null, cv: null, shareImage: null };
     const result = await new Promise((resolve, reject) => {
       const transaction = database.transaction(storeName, "readonly");
       const store = transaction.objectStore(storeName);
-      const files = { avatar: null, cv: null };
-      let pending = 2;
-      ["avatar", "cv"].forEach((key) => {
+      const files = { avatar: null, cv: null, shareImage: null };
+      let pending = 3;
+      ["avatar", "cv", "shareImage"].forEach((key) => {
         const request = store.get(key);
         request.addEventListener("success", () => {
           files[key] = request.result || null;
@@ -126,6 +132,10 @@
     const parsed = parseDraft(text);
     if (!parsed.valid) return parsed;
     parsed.runtimeFiles = await loadRuntimeFiles();
+    if (parsed.state.shareImageFile && !parsed.runtimeFiles.shareImage) {
+      parsed.state.shareImageError = namespace.schema.bilingual("浏览器中未找到自定义分享封面，请重新选择或恢复默认封面。", "The custom sharing cover was not found in this browser. Re-select it or use the default cover.");
+      parsed.state.advancedSeoExpanded = true;
+    }
     return parsed;
   }
 

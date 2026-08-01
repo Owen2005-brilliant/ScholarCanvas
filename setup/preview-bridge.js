@@ -45,7 +45,7 @@
   }
 
   function standaloneUrl(handoffToken) {
-    return `setup/preview/index.html?v=1.1.0-preview-4&standalone=1&handoff=${encodeURIComponent(handoffToken)}`;
+    return `setup/preview/index.html?v=1.1.0-seo-1&standalone=1&handoff=${encodeURIComponent(handoffToken)}`;
   }
 
   function prepareStandalone(handoffToken) {

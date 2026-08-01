@@ -80,7 +80,7 @@
       h("div", { class: "setup-preview__stage" },
         h("div", { class: "setup-preview__browser" },
           h("div", { class: "setup-preview__browser-bar", "aria-hidden": "true" }, h("span"), h("span"), h("span"), h("code", { text: namespace.serializer.computeSiteUrl(state.site) })),
-          h("iframe", { id: "setup-preview-frame", title: language === "en" ? "ScholarCanvas live preview" : "ScholarCanvas 实时预览", src: "setup/preview/index.html?v=1.1.0-preview-4", sandbox: "allow-scripts allow-same-origin" })
+          h("iframe", { id: "setup-preview-frame", title: language === "en" ? "ScholarCanvas live preview" : "ScholarCanvas 实时预览", src: "setup/preview/index.html?v=1.1.0-seo-1", sandbox: "allow-scripts allow-same-origin" })
         )
       )
     );
@@ -132,6 +132,13 @@
   }
 
   function focusError(path) {
+    const state = namespace.store.get();
+    const searchPath = namespace.seo.searchSharingErrors({ errors: [{ path }] }).length > 0;
+    if (searchPath && path !== "site.customUrl" && !state.advancedSeoExpanded) {
+      state.advancedSeoExpanded = true;
+      render();
+      markErrors(visibleErrors);
+    }
     const control = app.querySelector(`[data-path="${CSS.escape(path)}"]`);
     if (control) { control.focus(); control.scrollIntoView({ block: "center", behavior: "smooth" }); }
   }
@@ -192,6 +199,7 @@
       namespace.store.replace(result.state, { clean: true });
       if (result.runtimeFiles.avatar) namespace.store.setRuntimeFile("avatar", result.runtimeFiles.avatar, URL.createObjectURL(result.runtimeFiles.avatar));
       if (result.runtimeFiles.cv) namespace.store.setRuntimeFile("cv", result.runtimeFiles.cv, "");
+      if (result.runtimeFiles.shareImage) namespace.store.setRuntimeFile("shareImage", result.runtimeFiles.shareImage, URL.createObjectURL(result.runtimeFiles.shareImage));
       namespace.store.get().draftSaved = true;
       namespace.store.get().dirty = false;
       render();
@@ -217,12 +225,29 @@
       } catch (error) { toast(error.message || "Could not import draft", "error"); }
       return;
     }
-    const validation = action === "avatar" ? namespace.validators.avatarFile(file) : namespace.validators.cvFile(file);
-    if (!validation.valid) { toast(t(validation.message, namespace.store.get().language), "error"); input.value = ""; return; }
-    const objectUrl = action === "avatar" ? URL.createObjectURL(file) : "";
+    const validation = action === "avatar" ? namespace.validators.avatarFile(file) : action === "cv" ? namespace.validators.cvFile(file) : namespace.validators.shareImageFile(file);
+    if (!validation.valid) {
+      if (action === "shareImage") {
+        const state = namespace.store.get();
+        state.shareImageError = validation.message;
+        state.advancedSeoExpanded = true;
+        state.dirty = true;
+        namespace.store.notify("file");
+        render();
+      }
+      toast(t(validation.message, namespace.store.get().language), "error");
+      input.value = "";
+      return;
+    }
+    const objectUrl = action === "avatar" || action === "shareImage" ? URL.createObjectURL(file) : "";
     namespace.store.setRuntimeFile(action, file, objectUrl);
     if (action === "avatar") namespace.store.update("profile.avatar", namespace.serializer.avatarExportPath({ avatar: file }), { reason: "file" });
     if (action === "cv") namespace.store.update("profile.links.cv", "assets/files/cv.pdf", { reason: "file" });
+    if (action === "shareImage") {
+      namespace.store.get().shareImageError = null;
+      namespace.store.get().advancedSeoExpanded = true;
+      namespace.store.update("site.shareImage", namespace.serializer.shareImageExportPath({ shareImage: file }), { reason: "file" });
+    }
     render();
     toast(namespace.store.get().language === "en" ? "File added locally." : "文件已在本地添加。");
   }
@@ -289,7 +314,7 @@
     else if (action === "go-step") goStep(Number(target.dataset.step), Number(target.dataset.step) < state.currentStep);
     else if (action === "choose-source") {
       if (target.value === "import") document.getElementById("setup-draft-input").click();
-      else { namespace.store.chooseSource(target.value); visibleErrors = []; render(); }
+      else { namespace.store.clearRuntimeFiles(); namespace.store.chooseSource(target.value); visibleErrors = []; render(); }
     } else if (action === "set-mode" || action === "preview-mode") { namespace.store.setMode(target.value || target.dataset.value); render(); }
     else if (action === "open-draft-file") document.getElementById("setup-draft-input").click();
     else if (action === "preview-language") {
@@ -326,15 +351,17 @@
     else if (action === "remove-author") { namespace.store.removeAuthor(Number(target.dataset.publication), Number(target.dataset.author)); render(); }
     else if (action === "add-interest") {
       state.profile.interests.push({ id: `interest-${state.profile.interests.length + 1}`, label: { zh: "", en: "" }, description: { zh: "", en: "" } });
+      namespace.seo.syncAutomatic(state);
       state.dirty = true; namespace.store.notify("content"); render();
     } else if (action === "remove-interest") {
-      state.profile.interests.splice(Number(target.dataset.index), 1); state.dirty = true; namespace.store.notify("content"); render();
+      state.profile.interests.splice(Number(target.dataset.index), 1); namespace.seo.syncAutomatic(state); state.dirty = true; namespace.store.notify("content"); render();
     } else if (action === "move-interest") {
       const index = Number(target.dataset.index);
       const destination = index + Number(target.dataset.direction);
       if (destination >= 0 && destination < state.profile.interests.length) {
         const item = state.profile.interests.splice(index, 1)[0];
         state.profile.interests.splice(destination, 0, item);
+        namespace.seo.syncAutomatic(state);
         state.dirty = true; namespace.store.notify("content"); render();
       }
     } else if (action === "open-file") document.getElementById(`setup-${target.dataset.kind}-input`).click();
@@ -342,6 +369,36 @@
       namespace.store.setRuntimeFile(target.dataset.kind, null, "");
       namespace.store.update(target.dataset.kind === "avatar" ? "profile.avatar" : "profile.links.cv", target.dataset.kind === "avatar" ? "assets/avatar/profile-placeholder.svg" : "", { reason: "file" });
       render();
+    } else if (action === "toggle-seo-advanced") {
+      namespace.store.update("advancedSeoExpanded", !state.advancedSeoExpanded, { reason: "layout" });
+      render();
+      const toggle = app.querySelector('[data-action="toggle-seo-advanced"]');
+      if (toggle) toggle.focus();
+    } else if (action === "reset-seo") {
+      const path = namespace.seo.fieldMap[target.dataset.seoKey];
+      namespace.store.resetSeoAutomatic(target.dataset.seoKey);
+      render();
+      const control = path && app.querySelector(`[data-path="${CSS.escape(path)}"]`);
+      if (control) control.focus();
+    } else if (action === "restore-share-cover") {
+      namespace.store.setRuntimeFile("shareImage", null, "");
+      state.shareImageError = null;
+      namespace.store.update("site.shareImage", namespace.seo.defaultShareImage, { reason: "file" });
+      render();
+    } else if (action === "toggle-manual-date") {
+      namespace.store.setManualDate(target.checked);
+      render();
+      const toggle = app.querySelector('[data-action="toggle-manual-date"]');
+      if (toggle) toggle.focus();
+    } else if (action === "open-seo-errors") {
+      state.advancedSeoExpanded = true;
+      state.dirty = true;
+      namespace.store.notify("layout");
+      const errors = namespace.seo.searchSharingErrors(namespace.validators.validateState(state));
+      visibleErrors = errors;
+      render();
+      markErrors(errors);
+      if (errors[0]) focusError(errors[0].path);
     } else if (action === "set-accent") { namespace.store.update("site.accentColor", target.dataset.color, { reason: "selection" }); render(); }
     else if (action === "save-draft") {
       const confirmed = await namespace.components.confirmationDialog.confirm({ title: language === "en" ? "Save this draft in your browser?" : "在此浏览器保存草稿？", description: t(namespace.schema.copy.privacy, language), confirmLabel: language === "en" ? "Save locally" : "保存在本地", cancelLabel: language === "en" ? "Cancel" : "取消", icon: "save" });
@@ -373,7 +430,17 @@
       const interest = namespace.store.get().profile.interests[Number(interestName[1])];
       if (interest && (!interest.id || /^interest-\d+$/.test(interest.id))) interest.id = namespace.stateUtils.slugify(nextValue, `interest-${Number(interestName[1]) + 1}`);
     }
-    namespace.store.update(control.dataset.path, nextValue, { reason: "field" });
+    if (control.dataset.seoKey) {
+      namespace.store.setSeoCustom(control.dataset.seoKey, nextValue);
+      const wrapper = control.closest(".setup-seo-field");
+      const status = wrapper && wrapper.querySelector(`[data-seo-status="${CSS.escape(control.dataset.seoKey)}"]`);
+      const reset = wrapper && wrapper.querySelector('[data-action="reset-seo"]');
+      if (status) {
+        status.className = "setup-seo-field__mode setup-seo-field__mode--custom";
+        status.textContent = namespace.store.get().language === "en" ? "Customized" : "已自定义";
+      }
+      if (reset) reset.hidden = false;
+    } else namespace.store.update(control.dataset.path, nextValue, { reason: "field" });
     if (["site.githubUsername", "site.repositoryName", "site.customUrl"].includes(control.dataset.path)) {
       const generatedUrl = namespace.serializer.computeSiteUrl(namespace.store.get().site);
       app.querySelectorAll(".setup-url-preview code, .setup-preview__browser-bar code").forEach((node) => { node.textContent = generatedUrl; });
@@ -390,13 +457,13 @@
     const fileInput = event.target.closest("[data-file-action]");
     if (fileInput) { handleFile(fileInput); return; }
     const action = event.target.closest("[data-action]");
-    if (action && ["choose-source", "set-mode", "toggle-section"].includes(action.dataset.action)) handleAction(action);
+    if (action && ["choose-source", "set-mode", "toggle-section", "toggle-manual-date"].includes(action.dataset.action)) handleAction(action);
     const control = event.target.closest("[data-path]");
     if (control && (control.type === "radio" || control.type === "checkbox")) render();
   });
   app.addEventListener("click", (event) => {
     const target = event.target.closest("[data-action]");
-    if (!target || ["choose-source", "set-mode", "toggle-section"].includes(target.dataset.action) && (target.type === "radio" || target.type === "checkbox")) return;
+    if (!target || ["choose-source", "set-mode", "toggle-section", "toggle-manual-date"].includes(target.dataset.action) && (target.type === "radio" || target.type === "checkbox")) return;
     if (target.dataset.action !== "open-standalone-preview") event.preventDefault();
     handleAction(target);
   });

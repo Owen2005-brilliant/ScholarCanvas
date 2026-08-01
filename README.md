@@ -16,7 +16,7 @@ ScholarCanvas is a bilingual, configuration-driven academic homepage template fo
 6. Push the repository to GitHub.
 7. In **Settings → Pages**, choose **GitHub Actions**.
 
-Everything is processed locally in your browser. No profile, avatar, or CV is uploaded. Advanced users can still edit `data/*.js` directly.
+Everything is processed locally in your browser. No profile, avatar, CV, or sharing image is uploaded. Search and sharing information is generated automatically from the profile; advanced users can customize it or edit `data/*.js` directly.
 
 ## Preview
 
@@ -48,7 +48,7 @@ The project also includes the visual-direction boards used during implementation
 - Keyboard-accessible controls, focus trapping, skip link, live-region announcements, reduced-motion support, and 44px touch targets.
 - Self-made SVG demo assets, lazy-loaded content images, no remote fonts, and no runtime network dependency.
 - Python configuration validation and official GitHub Pages workflows with no Node.js step.
-- A seven-step visual initializer with real homepage preview, browser-local drafts, safe JSON import, ZIP export, and optional local-folder writing.
+- A seven-step visual initializer with real homepage preview, automatic search/share metadata, browser-local drafts, safe JSON import, ZIP export, and optional local-folder writing.
 
 ## Student and Researcher presets
 
