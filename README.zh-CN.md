@@ -8,7 +8,7 @@ ScholarCanvas 是一个面向学生与研究者的双语、配置驱动学术个
 
 ## 预览
 
-GitHub Pages 部署目标：[https://owen2005-brilliant.github.io/ScholarCanvas/](https://owen2005-brilliant.github.io/ScholarCanvas/)。该地址是否可访问取决于最新 Pages 工作流是否成功完成。
+在线 Demo：[https://owen2005-brilliant.github.io/ScholarCanvas/](https://owen2005-brilliant.github.io/ScholarCanvas/)。
 
 ![ScholarCanvas Student Mode 桌面预览](docs/screenshots/student-mode-desktop.png)
 
@@ -47,6 +47,10 @@ GitHub Pages 部署目标：[https://owen2005-brilliant.github.io/ScholarCanvas/
 | 页脚 | Campus Horizon | Research Night |
 
 Demo 默认允许实时切换模式。正式个人站点可关闭预览开关，只发布一种模式。
+
+## 使用此模板
+
+在 GitHub 仓库页面点击 **Use this template → Create a new repository**。随后更新 `data/` 下的配置、替换虚构示例素材，在 `data/site.js`、`robots.txt` 和 `sitemap.xml` 中填写你的正式站点地址，并在新仓库中启用 **Settings → Pages → GitHub Actions**。
 
 ## 30 秒开始
 

@@ -8,7 +8,7 @@ ScholarCanvas is a bilingual, configuration-driven academic homepage template fo
 
 ## Preview
 
-GitHub Pages deployment target: [https://owen2005-brilliant.github.io/ScholarCanvas/](https://owen2005-brilliant.github.io/ScholarCanvas/). Availability depends on the latest Pages workflow completing successfully.
+Live demo: [https://owen2005-brilliant.github.io/ScholarCanvas/](https://owen2005-brilliant.github.io/ScholarCanvas/).
 
 ![ScholarCanvas Student Mode desktop preview](docs/screenshots/student-mode-desktop.png)
 
@@ -47,6 +47,10 @@ The project also includes the visual-direction boards used during implementation
 | Footer | Campus Horizon | Research Night |
 
 The mode switch is enabled in the demo. Personal sites can disable it and publish one preset.
+
+## Use this template
+
+On GitHub, choose **Use this template → Create a new repository**. Then update the files under `data/`, replace the fictional assets, set your production URL in `data/site.js`, `robots.txt`, and `sitemap.xml`, and enable **Settings → Pages → GitHub Actions** in the new repository.
 
 ## 30-second quick start
 
