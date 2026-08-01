@@ -4,7 +4,41 @@ ScholarCanvas 是一个面向学生与研究者的双语、配置驱动学术个
 
 > 仓库中的人物、学校、论文、项目与奖项均为虚构示例。发布前请完整替换。
 
-[English README](README.md) · [学生示例](examples/student/README.md) · [研究者示例](examples/researcher/README.md) · [GitHub 仓库](https://github.com/Owen2005-brilliant/ScholarCanvas)
+[打开可视化初始化器](https://owen2005-brilliant.github.io/ScholarCanvas/setup.html) · [可视化初始化指南](docs/visual-setup-guide.zh-CN.md) · [English README](README.md) · [学生示例](examples/student/README.md) · [研究者示例](examples/researcher/README.md) · [GitHub 仓库](https://github.com/Owen2005-brilliant/ScholarCanvas)
+
+## 快速开始
+
+1. 点击仓库右上角的 **Use this template**，创建自己的仓库。
+2. 下载或克隆自己的仓库。
+3. 双击 `setup.html`，或者运行：
+
+   ```bash
+   python3 -m http.server 8000
+   ```
+
+   然后访问 [http://localhost:8000/setup.html](http://localhost:8000/setup.html)。
+4. 在可视化页面中：
+   - 选择 Student 或 Researcher；
+   - 填写个人资料；
+   - 添加项目、论文和经历；
+   - 实时预览主页；
+   - 下载配置包，或者直接写入本地 ScholarCanvas 文件夹。
+5. 将生成的配置应用到仓库，并确认主页预览正常。
+6. 将代码推送到 GitHub。
+7. 打开 **Settings → Pages → Source → GitHub Actions**。
+8. 等待部署完成，即可访问自己的个人主页。
+
+`setup.html` 是推荐方式，手动编辑 `data/*.js` 是面向高级用户的备用方式。ScholarCanvas 不需要后端、不需要 Node.js、不需要数据库；所有填写的信息只在浏览器本地处理。没有论文的学生可以关闭 Publications。
+
+### 手动修改
+
+高级用户也可以直接编辑：
+
+- `data/site.js`
+- `data/profile.js`
+- `data/projects.js`
+- `data/publications.js`
+- `data/experience.js`
 
 ## 预览
 
@@ -22,6 +56,8 @@ ScholarCanvas 是一个面向学生与研究者的双语、配置驱动学术个
 
 - [Student Mode 视觉方向](docs/design-concepts/student-mode.png)
 - [Researcher Mode 视觉方向](docs/design-concepts/researcher-mode.png)
+- [可视化初始化器桌面视觉方向](docs/design-concepts/setup-wizard-desktop.png)
+- [可视化初始化器移动视觉方向](docs/design-concepts/setup-wizard-mobile.png)
 
 ## 主要功能
 
@@ -34,6 +70,7 @@ ScholarCanvas 是一个面向学生与研究者的双语、配置驱动学术个
 - 支持键盘、Skip Link、焦点陷阱、`aria-live`、减少动态偏好和至少 44px 的触摸目标。
 - 示例资产均为项目自制 SVG；无外部字体，无运行时联网依赖。
 - 自带 Python 配置校验与官方 GitHub Pages 工作流，不使用 Node.js。
+- 七步可视化初始化器，包含真实主页预览、搜索与分享信息自动生成、本地草稿、安全 JSON 导入、ZIP 导出与可选文件夹写入。
 
 ## 两种模式的真正差异
 
@@ -47,26 +84,6 @@ ScholarCanvas 是一个面向学生与研究者的双语、配置驱动学术个
 | 页脚 | Campus Horizon | Research Night |
 
 Demo 默认允许实时切换模式。正式个人站点可关闭预览开关，只发布一种模式。
-
-## 使用此模板
-
-在 GitHub 仓库页面点击 **Use this template → Create a new repository**。随后更新 `data/` 下的配置、替换虚构示例素材，在 `data/site.js`、`robots.txt` 和 `sitemap.xml` 中填写你的正式站点地址，并在新仓库中启用 **Settings → Pages → GitHub Actions**。
-
-## 30 秒开始
-
-1. 下载或克隆仓库。
-2. 双击 `index.html`。
-3. 编辑 `data/profile.js`，刷新页面。
-4. 替换 `data/` 下其他虚构内容与 `assets/` 中的示例图。
-5. 发布前运行 `python3 tools/validate_config.py`。
-
-也可以启动本地静态服务器：
-
-```bash
-python3 -m http.server 8080
-```
-
-打开 `http://localhost:8080/`。整个项目没有安装命令和构建命令。
 
 ## 配置文件
 
@@ -168,7 +185,7 @@ python3 tools/validate_config.py
 python3 -m compileall -q tools
 ```
 
-直接打开或通过静态服务器访问 `tests/smoke.html`，页面会显示浏览器内断言，覆盖：双模式顺序、i18n 回退、配置字段缺失、空论文/项目列表、超过 12 个项目、安全链接、图片 alt、外链 `rel` 与 DOM 重复 ID。
+直接打开或通过静态服务器访问 `tests/smoke.html` 与 `tests/setup-smoke.html`，页面会显示主页和可视化初始化/导出管线的浏览器断言。
 
 可以验证失败路径：
 

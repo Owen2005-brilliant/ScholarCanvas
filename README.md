@@ -4,7 +4,41 @@ ScholarCanvas is a bilingual, configuration-driven academic homepage template fo
 
 > The bundled profile, institutions, publications, projects, and awards are fictional demo content. Replace them before publishing.
 
-[中文文档](README.zh-CN.md) · [Student example](examples/student/README.md) · [Researcher example](examples/researcher/README.md) · [GitHub repository](https://github.com/Owen2005-brilliant/ScholarCanvas)
+[Open Visual Setup](https://owen2005-brilliant.github.io/ScholarCanvas/setup.html) · [Visual setup guide](docs/visual-setup-guide.md) · [中文文档](README.zh-CN.md) · [Student example](examples/student/README.md) · [Researcher example](examples/researcher/README.md) · [GitHub repository](https://github.com/Owen2005-brilliant/ScholarCanvas)
+
+## Quick start
+
+1. Choose **Use this template** on GitHub to create your own repository.
+2. Download or clone your repository.
+3. Double-click `setup.html`, or run:
+
+   ```bash
+   python3 -m http.server 8000
+   ```
+
+   Then open [http://localhost:8000/setup.html](http://localhost:8000/setup.html).
+4. In the visual setup:
+   - choose Student or Researcher;
+   - enter your profile;
+   - add projects, publications, and experience;
+   - preview the homepage live;
+   - download the configuration bundle, or write it directly to a local ScholarCanvas folder.
+5. Apply the generated configuration to your repository and check the homepage preview.
+6. Push your repository to GitHub.
+7. Open **Settings → Pages → Source → GitHub Actions**.
+8. Wait for deployment, then visit your personal homepage.
+
+`setup.html` is the recommended path; editing `data/*.js` is the fallback for advanced users. ScholarCanvas needs no backend, Node.js, or database. Everything you enter stays in your browser, and students without publications can turn off the Publications section.
+
+### Manual editing
+
+Advanced users can edit these files directly:
+
+- `data/site.js`
+- `data/profile.js`
+- `data/projects.js`
+- `data/publications.js`
+- `data/experience.js`
 
 ## Preview
 
@@ -22,6 +56,8 @@ The project also includes the visual-direction boards used during implementation
 
 - [Student Mode concept](docs/design-concepts/student-mode.png)
 - [Researcher Mode concept](docs/design-concepts/researcher-mode.png)
+- [Visual Setup desktop concept](docs/design-concepts/setup-wizard-desktop.png)
+- [Visual Setup mobile concept](docs/design-concepts/setup-wizard-mobile.png)
 
 ## Features
 
@@ -34,6 +70,7 @@ The project also includes the visual-direction boards used during implementation
 - Keyboard-accessible controls, focus trapping, skip link, live-region announcements, reduced-motion support, and 44px touch targets.
 - Self-made SVG demo assets, lazy-loaded content images, no remote fonts, and no runtime network dependency.
 - Python configuration validation and official GitHub Pages workflows with no Node.js step.
+- A seven-step visual initializer with real homepage preview, automatic search/share metadata, browser-local drafts, safe JSON import, ZIP export, and optional local-folder writing.
 
 ## Student and Researcher presets
 
@@ -47,26 +84,6 @@ The project also includes the visual-direction boards used during implementation
 | Footer | Campus Horizon | Research Night |
 
 The mode switch is enabled in the demo. Personal sites can disable it and publish one preset.
-
-## Use this template
-
-On GitHub, choose **Use this template → Create a new repository**. Then update the files under `data/`, replace the fictional assets, set your production URL in `data/site.js`, `robots.txt`, and `sitemap.xml`, and enable **Settings → Pages → GitHub Actions** in the new repository.
-
-## 30-second quick start
-
-1. Download or clone the repository.
-2. Open `index.html` directly in a browser.
-3. Edit `data/profile.js`, then refresh.
-4. Replace the remaining fictional entries under `data/`.
-5. Run `python3 tools/validate_config.py` before publishing.
-
-For a local HTTP preview:
-
-```bash
-python3 -m http.server 8080
-```
-
-Then open `http://localhost:8080/`. No installation or build command is needed.
 
 ## Configuration
 
@@ -179,7 +196,7 @@ python3 tools/validate_config.py
 python3 -m compileall -q tools
 ```
 
-Open `tests/smoke.html` directly or through the local server. It displays browser assertions for mode order, i18n fallback, missing optional data, empty arrays, more than 12 projects, link safety, alt text, external-link protection, and duplicate DOM IDs.
+Open `tests/smoke.html` and `tests/setup-smoke.html` directly or through the local server. They display browser assertions for the homepage and the visual setup/export pipeline.
 
 The intentionally invalid fixture can confirm the validator's failure path:
 
