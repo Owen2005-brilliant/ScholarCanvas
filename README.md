@@ -8,7 +8,7 @@ ScholarCanvas is a bilingual academic homepage for students and researchers, wit
 
 ## Online experience
 
-- [View the ScholarCanvas demo](https://owen2005-brilliant.github.io/ScholarCanvas/)
+- [View the ScholarCanvas demo (fictional profile for demonstration)](https://owen2005-brilliant.github.io/ScholarCanvas/)
 - [Create your homepage with Visual Setup](https://owen2005-brilliant.github.io/ScholarCanvas/setup.html)
 - [Read the Visual Setup guide](docs/visual-setup-guide.md)
 

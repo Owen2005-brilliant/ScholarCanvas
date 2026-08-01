@@ -8,7 +8,7 @@ ScholarCanvas 是一个面向学生和研究者的双语学术个人主页，提
 
 ## 在线体验
 
-- [查看 ScholarCanvas 示例主页](https://owen2005-brilliant.github.io/ScholarCanvas/)
+- [查看 ScholarCanvas 示例主页（虚构人物，仅做展示）](https://owen2005-brilliant.github.io/ScholarCanvas/)
 - [使用可视化初始化器创建主页](https://owen2005-brilliant.github.io/ScholarCanvas/setup.html)
 - [阅读可视化初始化指南](docs/visual-setup-guide.zh-CN.md)
 
