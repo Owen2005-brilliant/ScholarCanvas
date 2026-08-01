@@ -1,0 +1,23 @@
+{
+  "format": "scholarcanvas-setup",
+  "version": 1,
+  "createdAt": "2026-08-01T00:00:00.000Z",
+  "state": {
+    "mode": "researcher",
+    "language": "en",
+    "currentStep": 0,
+    "source": "minimal",
+    "site": {
+      "githubUsername": "imported-researcher",
+      "repositoryName": "ScholarCanvas-Imported",
+      "defaultLanguage": "en"
+    },
+    "profile": {
+      "name": {
+        "zh": "导入测试学者",
+        "en": "Imported Researcher"
+      },
+      "email": "imported@example.com"
+    }
+  }
+}

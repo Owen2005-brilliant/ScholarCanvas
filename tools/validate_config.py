@@ -12,6 +12,7 @@ from pathlib import Path
 
 REQUIRED_FILES = [
     "index.html",
+    "setup.html",
     "README.md",
     "README.zh-CN.md",
     "LICENSE",
@@ -52,9 +53,37 @@ REQUIRED_FILES = [
     "styles/researcher.css",
     "styles/dark.css",
     "styles/responsive.css",
+    "setup/schema.js",
+    "setup/state.js",
+    "setup/validators.js",
+    "setup/serializer.js",
+    "setup/exporter.js",
+    "setup/importer.js",
+    "setup/file-system.js",
+    "setup/preview-bridge.js",
+    "setup/ui.js",
+    "setup/setup.js",
+    "setup/setup.css",
+    "setup/setup-responsive.css",
+    "setup/preview/index.html",
+    "setup/preview/bootstrap.js",
+    "setup/components/welcome.js",
+    "setup/components/stepper.js",
+    "setup/components/identity-form.js",
+    "setup/components/section-selector.js",
+    "setup/components/repeater-editor.js",
+    "setup/components/content-editor.js",
+    "setup/components/branding-form.js",
+    "setup/components/preview-toolbar.js",
+    "setup/components/export-panel.js",
+    "setup/components/confirmation-dialog.js",
     "tools/update_date.py",
     "tools/optimize_images.py",
     "tests/smoke.html",
+    "tests/setup-smoke.html",
+    "tests/setup-smoke.js",
+    "docs/visual-setup-guide.md",
+    "docs/visual-setup-guide.zh-CN.md",
     "examples/student/site.js",
     "examples/researcher/site.js",
     ".github/workflows/validate.yml",
@@ -215,14 +244,14 @@ def validate_publications(text: str, report: Report) -> None:
                 report.error(f"At least one publication is missing '{field}' ({count}/{publication_count}).")
 
 
-def validate_html(root: Path, report: Report) -> None:
-    html = read_text(root / "index.html", report)
+def validate_html(root: Path, relative: str, report: Report) -> None:
+    html = read_text(root / relative, report)
     ids = re.findall(r"\bid\s*=\s*['\"]([^'\"]+)['\"]", html)
     duplicates = sorted({identifier for identifier in ids if ids.count(identifier) > 1})
     if duplicates:
-        report.error(f"Duplicate static HTML ids: {', '.join(duplicates)}")
+        report.error(f"Duplicate static HTML ids in {relative}: {', '.join(duplicates)}")
     if re.search(r"\son[a-z]+\s*=", html, re.IGNORECASE):
-        report.error("Inline event handlers are not allowed in index.html.")
+        report.error(f"Inline event handlers are not allowed in {relative}.")
     for reference in re.findall(r"\b(?:src|href)\s*=\s*['\"]([^'\"]+)['\"]", html):
         if not reference or reference.startswith("#") or re.match(r"^(?:https?:|mailto:)", reference, re.IGNORECASE):
             continue
@@ -276,7 +305,10 @@ def validate_root(root: Path, check_files: list[Path]) -> Report:
     if (root / "data/publications.js").is_file():
         validate_publications(texts.get(Path("data/publications.js"), ""), report)
     if (root / "index.html").is_file():
-        validate_html(root, report)
+        validate_html(root, "index.html", report)
+    if (root / "setup.html").is_file():
+        validate_html(root, "setup.html", report)
+
     return report
 
 

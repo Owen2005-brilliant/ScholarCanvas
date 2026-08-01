@@ -1,0 +1,50 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <base href="../">
+  <title>ScholarCanvas setup smoke tests</title>
+  <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+  <link rel="stylesheet" href="styles/tokens.css">
+  <link rel="stylesheet" href="styles/base.css">
+  <link rel="stylesheet" href="tests/smoke.css">
+  <link rel="stylesheet" href="setup/setup.css">
+  <link rel="stylesheet" href="setup/setup-responsive.css">
+</head>
+<body>
+  <section class="smoke-panel" aria-labelledby="setup-smoke-title">
+    <p class="smoke-label">Browser assertions</p>
+    <h1 id="setup-smoke-title">Visual setup smoke tests</h1>
+    <p id="setup-smoke-summary" role="status" aria-live="polite">Running…</p>
+    <ol id="setup-smoke-results"></ol>
+    <p><a href="setup.html">Open visual setup</a></p>
+  </section>
+  <div id="setup-dialog-root"></div>
+  <div id="setup-toast-region" role="status" aria-live="polite"></div>
+  <div id="setup-announcer" aria-live="polite"></div>
+
+  <script src="data/site.js"></script>
+  <script src="data/profile.js"></script>
+  <script src="data/news.js"></script>
+  <script src="data/publications.js"></script>
+  <script src="data/projects.js"></script>
+  <script src="data/experience.js"></script>
+  <script src="data/awards.js"></script>
+  <script src="data/skills.js"></script>
+  <script src="data/teaching.js"></script>
+  <script src="data/service.js"></script>
+  <script src="setup/schema.js"></script>
+  <script src="setup/state.js"></script>
+  <script src="setup/validators.js"></script>
+  <script src="setup/serializer.js"></script>
+  <script src="setup/exporter.js"></script>
+  <script src="setup/importer.js"></script>
+  <script src="setup/file-system.js"></script>
+  <script src="setup/preview-bridge.js"></script>
+  <script src="setup/ui.js"></script>
+  <script src="setup/components/preview-toolbar.js"></script>
+  <script src="setup/components/confirmation-dialog.js"></script>
+  <script src="tests/setup-smoke.js"></script>
+</body>
+</html>
