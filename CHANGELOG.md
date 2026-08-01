@@ -6,17 +6,22 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ## [Unreleased]
 
+## [1.1.0] - 2026-08-01
+
 ### Added
 
-- Visual setup wizard for creating ScholarCanvas profiles without editing JavaScript.
-- Live Student and Researcher previews.
+- Visual setup wizard with Student and Researcher configuration modes.
+- Live homepage preview while editing profiles, projects, publications, and experience.
+- Automatic search and sharing metadata generated from profile content.
+- Avatar, CV, and sharing-cover export.
 - Browser-local draft saving and safe JSON import/export.
-- Visual editors for profile, publications, projects, experience, awards, skills, teaching, and service.
-- Avatar and CV packaging.
-- Downloadable ScholarCanvas configuration bundles.
+- Downloadable ScholarCanvas configuration ZIP bundles.
 - Optional local-folder writing through the File System Access API.
-- Privacy-first onboarding with no backend or account authorization.
-- Visual setup documentation and browser smoke tests.
+- Expanded browser coverage with 121 Setup Smoke assertions.
+
+### Compatibility
+
+- Preserved the zero-backend, zero-framework architecture and compatibility with existing v1.0 configuration files and drafts.
 
 ## [1.0.0] - 2026-08-01
 
