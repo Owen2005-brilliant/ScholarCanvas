@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en" data-theme="light">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <base href="../">
+    <title>ScholarCanvas browser smoke tests</title>
+    <link rel="icon" href="assets/icons/favicon.svg" type="image/svg+xml">
+    <link rel="stylesheet" href="styles/tokens.css">
+    <link rel="stylesheet" href="styles/base.css">
+    <link rel="stylesheet" href="styles/layout.css">
+    <link rel="stylesheet" href="styles/components.css">
+    <link rel="stylesheet" href="styles/student.css">
+    <link rel="stylesheet" href="styles/researcher.css">
+    <link rel="stylesheet" href="styles/dark.css">
+    <link rel="stylesheet" href="styles/responsive.css">
+    <link rel="stylesheet" href="tests/smoke.css">
+  </head>
+  <body>
+    <section class="smoke-panel" aria-labelledby="smoke-title">
+      <p class="smoke-label">Browser assertions</p>
+      <h1 id="smoke-title">ScholarCanvas smoke tests</h1>
+      <p id="smoke-summary" role="status" aria-live="polite">Running…</p>
+      <ol id="smoke-results"></ol>
+      <p><a href="index.html">Open the main demo</a></p>
+    </section>
+    <div id="app" class="smoke-app" aria-busy="true"></div>
+    <div id="toast-region" class="toast-region" role="status" aria-live="polite"></div>
+    <div id="modal-root"></div>
+
+    <svg class="icon-sprite" aria-hidden="true"><symbol id="icon-star" viewBox="0 0 24 24"><path d="m12 2.7 2.8 5.7 6.3.9-4.6 4.4 1.1 6.3-5.6-3-5.6 3 1.1-6.3-4.6-4.4 6.3-.9z"/></symbol><symbol id="icon-spark" viewBox="0 0 24 24"><path d="M12 2c.6 5.7 3.3 8.4 9 9-5.7.6-8.4 3.3-9 9-.6-5.7-3.3-8.4-9-9 5.7-.6 8.4-3.3 9-9z"/></symbol><symbol id="icon-chevron" viewBox="0 0 24 24"><path d="m8 10 4 4 4-4"/></symbol><symbol id="icon-arrow" viewBox="0 0 24 24"><path d="M5 12h14m-5-5 5 5-5 5"/></symbol></svg>
+
+    <script defer src="data/site.js"></script>
+    <script defer src="data/profile.js"></script>
+    <script defer src="data/news.js"></script>
+    <script defer src="data/publications.js"></script>
+    <script defer src="data/projects.js"></script>
+    <script defer src="data/experience.js"></script>
+    <script defer src="data/awards.js"></script>
+    <script defer src="data/skills.js"></script>
+    <script defer src="data/teaching.js"></script>
+    <script defer src="data/service.js"></script>
+    <script defer src="src/i18n.js"></script>
+    <script defer src="src/theme.js"></script>
+    <script defer src="src/accessibility.js"></script>
+    <script defer src="src/interactions.js"></script>
+    <script defer src="src/renderer.js"></script>
+    <script defer src="src/components/hero.js"></script>
+    <script defer src="src/components/news.js"></script>
+    <script defer src="src/components/publications.js"></script>
+    <script defer src="src/components/projects.js"></script>
+    <script defer src="src/components/experience.js"></script>
+    <script defer src="src/components/awards.js"></script>
+    <script defer src="src/components/skills.js"></script>
+    <script defer src="src/components/teaching.js"></script>
+    <script defer src="src/components/service.js"></script>
+    <script defer src="src/components/footer.js"></script>
+    <script defer src="tests/smoke.js"></script>
+  </body>
+</html>

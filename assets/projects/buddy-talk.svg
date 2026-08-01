@@ -1,0 +1,17 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-labelledby="title desc">
+  <title id="title">BuddyTalk illustration</title>
+  <desc id="desc">A mobile learning companion with friendly conversation bubbles.</desc>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#dff3ff"/><stop offset="1" stop-color="#fff4d6"/></linearGradient></defs>
+  <rect width="800" height="480" rx="32" fill="url(#g)"/>
+  <rect x="284" y="30" width="242" height="420" rx="42" fill="#10263d" transform="rotate(-5 405 240)"/>
+  <rect x="304" y="54" width="202" height="372" rx="27" fill="#fff" transform="rotate(-5 405 240)"/>
+  <circle cx="400" cy="176" r="60" fill="#e8f6ff"/>
+  <rect x="365" y="144" width="70" height="60" rx="22" fill="#38bdf8"/>
+  <circle cx="387" cy="171" r="6" fill="#17324d"/><circle cx="414" cy="171" r="6" fill="#17324d"/><path d="M386 187c10 8 20 8 29 0" fill="none" stroke="#17324d" stroke-width="4" stroke-linecap="round"/>
+  <path d="M400 144v-18" stroke="#17324d" stroke-width="5"/><circle cx="400" cy="120" r="7" fill="#f59e0b"/>
+  <rect x="330" y="260" width="135" height="37" rx="18" fill="#eef4fa" transform="rotate(-5 397 278)"/>
+  <rect x="351" y="309" width="120" height="37" rx="18" fill="#fff0c5" transform="rotate(-5 411 327)"/>
+  <path d="M143 141h125c18 0 32 14 32 32v38c0 18-14 32-32 32h-68l-34 29 9-29h-32c-18 0-32-14-32-32v-38c0-18 14-32 32-32z" fill="#fff" stroke="#8dc7ef" stroke-width="4"/>
+  <path d="M571 199h111c18 0 32 14 32 32v31c0 18-14 32-32 32h-20l8 26-29-26h-70c-18 0-32-14-32-32v-31c0-18 14-32 32-32z" fill="#fff7dc" stroke="#f0b335" stroke-width="4"/>
+  <g fill="#9bb0c2"><rect x="144" y="174" width="103" height="8" rx="4"/><rect x="144" y="193" width="76" height="8" rx="4"/><rect x="572" y="231" width="103" height="8" rx="4"/><rect x="572" y="250" width="63" height="8" rx="4"/></g>
+</svg>

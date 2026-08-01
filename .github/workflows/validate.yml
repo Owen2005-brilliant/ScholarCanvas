@@ -1,0 +1,40 @@
+name: Validate ScholarCanvas
+
+on:
+  push:
+  pull_request:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out repository
+        uses: actions/checkout@v4
+
+      - name: Set up Python
+        uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Validate configuration and required files
+        run: python3 tools/validate_config.py
+
+      - name: Compile Python tools
+        run: python3 -m compileall -q tools
+
+      - name: Check for inline event handlers and duplicate static IDs
+        run: |
+          python3 - <<'PY'
+          import re
+          from pathlib import Path
+
+          html = Path("index.html").read_text(encoding="utf-8")
+          assert not re.search(r"\son[a-z]+\s*=", html, re.I), "Inline event handler found"
+          ids = re.findall(r"\bid\s*=\s*['\"]([^'\"]+)['\"]", html)
+          duplicates = sorted({value for value in ids if ids.count(value) > 1})
+          assert not duplicates, f"Duplicate static IDs: {duplicates}"
+          print("Static HTML checks passed.")
+          PY

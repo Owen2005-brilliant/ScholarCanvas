@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 800 480" role="img" aria-labelledby="title desc">
+  <title id="title">Explainable ML Studio illustration</title>
+  <desc id="desc">A concept graph connected to a compact analytics panel.</desc>
+  <defs><linearGradient id="g" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#edf7ff"/><stop offset="1" stop-color="#fff7dc"/></linearGradient></defs>
+  <rect width="800" height="480" rx="32" fill="url(#g)"/>
+  <g stroke="#78aee8" stroke-width="3" fill="none" opacity=".75">
+    <path d="M95 118l92 76 112-76 79 72"/><path d="M187 194l-48 112 151 23 88-139"/><path d="M290 329l99 42"/>
+  </g>
+  <g fill="#fff" stroke="#2f80ed" stroke-width="4">
+    <circle cx="95" cy="118" r="23"/><circle cx="187" cy="194" r="28"/><circle cx="299" cy="118" r="22"/><circle cx="378" cy="190" r="26"/><circle cx="139" cy="306" r="24"/><circle cx="290" cy="329" r="30"/><circle cx="389" cy="371" r="21"/>
+  </g>
+  <rect x="438" y="72" width="296" height="340" rx="20" fill="#14263a"/>
+  <rect x="466" y="102" width="151" height="14" rx="7" fill="#dceaff"/>
+  <rect x="466" y="134" width="233" height="8" rx="4" fill="#60758a"/>
+  <rect x="466" y="180" width="238" height="98" rx="12" fill="#1e3853"/>
+  <g fill="#38bdf8"><rect x="486" y="238" width="26" height="22" rx="4"/><rect x="526" y="218" width="26" height="42" rx="4"/><rect x="566" y="190" width="26" height="70" rx="4"/><rect x="606" y="228" width="26" height="32" rx="4"/><rect x="646" y="205" width="26" height="55" rx="4"/></g>
+  <rect x="466" y="310" width="102" height="54" rx="12" fill="#f59e0b"/><rect x="583" y="310" width="121" height="54" rx="12" fill="#253f59"/>
+  <path d="M42 406h350" stroke="#f59e0b" stroke-width="5" stroke-linecap="round" opacity=".55"/>
+</svg>

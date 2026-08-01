@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 400 400" role="img" aria-labelledby="title desc">
+  <title id="title">Abstract portrait of fictional profile Zhixia Lin</title>
+  <desc id="desc">A friendly geometric portrait in amber and blue.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#fff7dc"/>
+      <stop offset="1" stop-color="#dff3ff"/>
+    </linearGradient>
+  </defs>
+  <rect width="400" height="400" rx="72" fill="url(#bg)"/>
+  <circle cx="88" cy="82" r="8" fill="#f59e0b"/>
+  <path d="M309 62l7 14 16 2-12 11 3 16-14-8-15 8 4-16-12-11 16-2z" fill="#38bdf8" opacity=".72"/>
+  <path d="M96 360c8-91 53-135 105-135 53 0 99 44 107 135" fill="#f5a623"/>
+  <path d="M145 236l56 53 55-53 25 31-23 93H143l-24-93z" fill="#ffd884"/>
+  <ellipse cx="201" cy="167" rx="78" ry="91" fill="#f8c9a6"/>
+  <path d="M128 179c-11-76 28-127 84-127 67 0 91 55 72 138-10-23-25-39-44-49-24-12-40-38-42-58-10 30-34 57-70 70z" fill="#17324d"/>
+  <path d="M126 164c-13 52 8 101 44 114-22-23-24-54-17-82m120-45c19 43 4 103-31 124 23-29 23-55 16-82" fill="#17324d"/>
+  <ellipse cx="171" cy="169" rx="6" ry="8" fill="#1f2937"/>
+  <ellipse cx="233" cy="169" rx="6" ry="8" fill="#1f2937"/>
+  <path d="M187 202c9 8 19 8 29 0" fill="none" stroke="#b85c4b" stroke-width="5" stroke-linecap="round"/>
+  <circle cx="155" cy="191" r="11" fill="#ef8f83" opacity=".42"/>
+  <circle cx="248" cy="191" r="11" fill="#ef8f83" opacity=".42"/>
+</svg>

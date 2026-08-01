@@ -1,0 +1,29 @@
+body[data-mode="student"] .site-header {
+  box-shadow: 0 1px 0 color-mix(in srgb, var(--accent) 7%, transparent);
+}
+
+body[data-mode="student"] .projects-section {
+  background: var(--background);
+}
+
+body[data-mode="student"] .project-card:first-child {
+  border-color: color-mix(in srgb, var(--secondary) 70%, var(--border));
+  box-shadow: 0 0 0 2px color-mix(in srgb, var(--secondary) 12%, transparent), var(--shadow-sm);
+}
+
+body[data-mode="student"] .publications-section {
+  background: color-mix(in srgb, var(--secondary-soft) 18%, var(--background));
+}
+
+body[data-mode="student"] .award-wall .award-card:nth-child(2n) .award-icon {
+  background: var(--secondary-soft);
+  color: color-mix(in srgb, var(--secondary) 75%, var(--heading));
+}
+
+body[data-mode="student"] .skill-tags li:nth-child(3n + 2) {
+  background: color-mix(in srgb, var(--accent-soft) 56%, var(--surface));
+}
+
+body[data-mode="student"] .section-title-row h2 {
+  font-weight: 760;
+}

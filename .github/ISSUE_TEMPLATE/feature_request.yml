@@ -1,0 +1,32 @@
+name: Feature request
+description: Propose a focused improvement that preserves the static-first scope.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: textarea
+    id: need
+    attributes:
+      label: User need
+      description: Which student or researcher problem would this solve?
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: Proposed behavior
+      description: Describe the smallest useful change and its configuration shape.
+    validations:
+      required: true
+  - type: checkboxes
+    id: constraints
+    attributes:
+      label: Project constraints
+      options:
+        - label: It works without a backend or database.
+          required: true
+        - label: It does not require a Node.js build step.
+          required: true
+        - label: It can be keyboard accessible and responsive.
+          required: true
+        - label: Any proposed assets are original or license-compatible.
+          required: true

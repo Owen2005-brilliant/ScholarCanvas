@@ -1,0 +1,4 @@
+User-agent: *
+Allow: /
+
+Sitemap: https://owen2005-brilliant.github.io/ScholarCanvas/sitemap.xml

@@ -1,0 +1,76 @@
+:root {
+  --font-sans: Inter, ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", "PingFang SC", "Hiragino Sans GB", "Microsoft YaHei", sans-serif;
+  --font-serif: Iowan Old Style, "Palatino Linotype", "Songti SC", "STSong", Georgia, serif;
+  --font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+
+  --student-accent: #f59e0b;
+  --accent: var(--student-accent);
+  --accent-strong: #d97706;
+  --accent-soft: #fef3c7;
+  --secondary: #38bdf8;
+  --secondary-soft: #e0f2fe;
+  --text: #1f2937;
+  --heading: #15263a;
+  --muted: #667386;
+  --subtle: #8a95a4;
+  --surface: #ffffff;
+  --surface-raised: #ffffff;
+  --background: #fffdf8;
+  --background-band: #fffaf0;
+  --border: #e7e2d8;
+  --border-strong: #d7d0c3;
+  --focus: #1677d2;
+  --success: #238558;
+  --danger: #b54747;
+  --night: #092947;
+  --overlay: rgba(15, 23, 42, 0.62);
+
+  --shadow-xs: 0 1px 2px rgba(28, 39, 52, 0.04);
+  --shadow-sm: 0 8px 24px rgba(36, 47, 58, 0.07);
+  --shadow-md: 0 22px 64px rgba(36, 47, 58, 0.14);
+  --radius-xs: 7px;
+  --radius-sm: 12px;
+  --radius-md: 18px;
+  --radius-lg: 28px;
+  --radius-pill: 999px;
+
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.25rem;
+  --space-6: 1.5rem;
+  --space-8: 2rem;
+  --space-10: 2.5rem;
+  --space-12: 3rem;
+  --space-16: 4rem;
+  --space-20: 5rem;
+  --space-24: 6rem;
+
+  --container: 1160px;
+  --header-height: 72px;
+  --transition-fast: 160ms ease;
+  --transition: 260ms cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+:root[data-mode="researcher"] {
+  --accent: #9a6a22;
+  --accent-strong: #7e5218;
+  --accent-soft: #f5eedf;
+  --secondary: #334155;
+  --secondary-soft: #edf0f3;
+  --text: #111827;
+  --heading: #0f172a;
+  --muted: #64748b;
+  --subtle: #84909f;
+  --background: #fafaf9;
+  --background-band: #f7f6f3;
+  --border: #dfddd7;
+  --border-strong: #c8c4bb;
+  --shadow-sm: 0 6px 18px rgba(31, 41, 55, 0.035);
+  --shadow-md: 0 18px 48px rgba(31, 41, 55, 0.11);
+  --radius-xs: 4px;
+  --radius-sm: 7px;
+  --radius-md: 10px;
+  --radius-lg: 16px;
+}
