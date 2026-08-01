@@ -4,7 +4,7 @@ The visual setup wizard turns the existing `data/*.js` configuration into a seve
 
 ## 1. Choose a starting point and mode
 
-Choose **Start minimal** for explicit replacement placeholders, **Use current site** to load the repository's existing v1.0 configuration, or **Import a draft** to reopen a setup JSON file. Student Mode recommends Projects, Experience, Awards, and Skills. Researcher Mode recommends News, Publications, Projects, Awards, Teaching, and Service. Changing modes does not delete content or manually selected sections.
+Choose **Start minimal** for explicit replacement placeholders, **Use current site** to load the repository's existing ScholarCanvas configuration, or **Import a draft** to reopen a setup JSON file. Older configurations remain compatible. Student Mode recommends Projects, Experience, Awards, and Skills. Researcher Mode recommends News, Publications, Projects, Awards, Teaching, and Service. Changing modes does not delete content or manually selected sections.
 
 ## 2. Fill in the profile
 
