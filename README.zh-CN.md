@@ -4,7 +4,19 @@ ScholarCanvas 是一个面向学生与研究者的双语、配置驱动学术个
 
 > 仓库中的人物、学校、论文、项目与奖项均为虚构示例。发布前请完整替换。
 
-[English README](README.md) · [学生示例](examples/student/README.md) · [研究者示例](examples/researcher/README.md) · [GitHub 仓库](https://github.com/Owen2005-brilliant/ScholarCanvas)
+[打开可视化初始化器](https://owen2005-brilliant.github.io/ScholarCanvas/setup.html) · [可视化初始化指南](docs/visual-setup-guide.zh-CN.md) · [English README](README.md) · [学生示例](examples/student/README.md) · [研究者示例](examples/researcher/README.md) · [GitHub 仓库](https://github.com/Owen2005-brilliant/ScholarCanvas)
+
+## 最简单的使用方式
+
+1. 在 GitHub 点击 **Use this template** 创建自己的仓库。
+2. 下载或克隆仓库。
+3. 双击 `setup.html`。
+4. 在页面中填写资料，并实时预览 Student 或 Researcher 主页。
+5. 下载配置包；受支持的浏览器也可直接写入本地仓库。
+6. 将仓库推送到 GitHub。
+7. 在 **Settings → Pages** 中选择 **GitHub Actions**。
+
+所有资料、头像和简历都只在当前浏览器中处理，不会上传。高级用户仍可直接编辑 `data/*.js`。
 
 ## 预览
 
@@ -22,6 +34,8 @@ ScholarCanvas 是一个面向学生与研究者的双语、配置驱动学术个
 
 - [Student Mode 视觉方向](docs/design-concepts/student-mode.png)
 - [Researcher Mode 视觉方向](docs/design-concepts/researcher-mode.png)
+- [可视化初始化器桌面视觉方向](docs/design-concepts/setup-wizard-desktop.png)
+- [可视化初始化器移动视觉方向](docs/design-concepts/setup-wizard-mobile.png)
 
 ## 主要功能
 
@@ -34,6 +48,7 @@ ScholarCanvas 是一个面向学生与研究者的双语、配置驱动学术个
 - 支持键盘、Skip Link、焦点陷阱、`aria-live`、减少动态偏好和至少 44px 的触摸目标。
 - 示例资产均为项目自制 SVG；无外部字体，无运行时联网依赖。
 - 自带 Python 配置校验与官方 GitHub Pages 工作流，不使用 Node.js。
+- 七步可视化初始化器，包含真实主页预览、本地草稿、安全 JSON 导入、ZIP 导出与可选文件夹写入。
 
 ## 两种模式的真正差异
 
@@ -52,7 +67,7 @@ Demo 默认允许实时切换模式。正式个人站点可关闭预览开关，
 
 在 GitHub 仓库页面点击 **Use this template → Create a new repository**。随后更新 `data/` 下的配置、替换虚构示例素材，在 `data/site.js`、`robots.txt` 和 `sitemap.xml` 中填写你的正式站点地址，并在新仓库中启用 **Settings → Pages → GitHub Actions**。
 
-## 30 秒开始
+## 手动编辑：30 秒开始
 
 1. 下载或克隆仓库。
 2. 双击 `index.html`。
@@ -168,7 +183,7 @@ python3 tools/validate_config.py
 python3 -m compileall -q tools
 ```
 
-直接打开或通过静态服务器访问 `tests/smoke.html`，页面会显示浏览器内断言，覆盖：双模式顺序、i18n 回退、配置字段缺失、空论文/项目列表、超过 12 个项目、安全链接、图片 alt、外链 `rel` 与 DOM 重复 ID。
+直接打开或通过静态服务器访问 `tests/smoke.html` 与 `tests/setup-smoke.html`，页面会显示主页和可视化初始化/导出管线的浏览器断言。
 
 可以验证失败路径：
 

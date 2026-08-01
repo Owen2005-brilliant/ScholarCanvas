@@ -4,6 +4,20 @@ All notable changes to ScholarCanvas will be documented in this file.
 
 The format is based on Keep a Changelog, and this project follows Semantic Versioning.
 
+## [Unreleased]
+
+### Added
+
+- Visual setup wizard for creating ScholarCanvas profiles without editing JavaScript.
+- Live Student and Researcher previews.
+- Browser-local draft saving and safe JSON import/export.
+- Visual editors for profile, publications, projects, experience, awards, skills, teaching, and service.
+- Avatar and CV packaging.
+- Downloadable ScholarCanvas configuration bundles.
+- Optional local-folder writing through the File System Access API.
+- Privacy-first onboarding with no backend or account authorization.
+- Visual setup documentation and browser smoke tests.
+
 ## [1.0.0] - 2026-08-01
 
 ### Added

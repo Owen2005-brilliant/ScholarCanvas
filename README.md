@@ -4,7 +4,19 @@ ScholarCanvas is a bilingual, configuration-driven academic homepage template fo
 
 > The bundled profile, institutions, publications, projects, and awards are fictional demo content. Replace them before publishing.
 
-[中文文档](README.zh-CN.md) · [Student example](examples/student/README.md) · [Researcher example](examples/researcher/README.md) · [GitHub repository](https://github.com/Owen2005-brilliant/ScholarCanvas)
+[Open Visual Setup](https://owen2005-brilliant.github.io/ScholarCanvas/setup.html) · [Visual setup guide](docs/visual-setup-guide.md) · [中文文档](README.zh-CN.md) · [Student example](examples/student/README.md) · [Researcher example](examples/researcher/README.md) · [GitHub repository](https://github.com/Owen2005-brilliant/ScholarCanvas)
+
+## Easiest way to start
+
+1. Choose **Use this template** on GitHub to create your repository.
+2. Download or clone the repository.
+3. Double-click `setup.html`.
+4. Fill in your information while watching the live Student or Researcher preview.
+5. Download the configuration bundle, or apply it directly to the local repository in a supported browser.
+6. Push the repository to GitHub.
+7. In **Settings → Pages**, choose **GitHub Actions**.
+
+Everything is processed locally in your browser. No profile, avatar, or CV is uploaded. Advanced users can still edit `data/*.js` directly.
 
 ## Preview
 
@@ -22,6 +34,8 @@ The project also includes the visual-direction boards used during implementation
 
 - [Student Mode concept](docs/design-concepts/student-mode.png)
 - [Researcher Mode concept](docs/design-concepts/researcher-mode.png)
+- [Visual Setup desktop concept](docs/design-concepts/setup-wizard-desktop.png)
+- [Visual Setup mobile concept](docs/design-concepts/setup-wizard-mobile.png)
 
 ## Features
 
@@ -34,6 +48,7 @@ The project also includes the visual-direction boards used during implementation
 - Keyboard-accessible controls, focus trapping, skip link, live-region announcements, reduced-motion support, and 44px touch targets.
 - Self-made SVG demo assets, lazy-loaded content images, no remote fonts, and no runtime network dependency.
 - Python configuration validation and official GitHub Pages workflows with no Node.js step.
+- A seven-step visual initializer with real homepage preview, browser-local drafts, safe JSON import, ZIP export, and optional local-folder writing.
 
 ## Student and Researcher presets
 
@@ -52,7 +67,7 @@ The mode switch is enabled in the demo. Personal sites can disable it and publis
 
 On GitHub, choose **Use this template → Create a new repository**. Then update the files under `data/`, replace the fictional assets, set your production URL in `data/site.js`, `robots.txt`, and `sitemap.xml`, and enable **Settings → Pages → GitHub Actions** in the new repository.
 
-## 30-second quick start
+## Manual 30-second quick start
 
 1. Download or clone the repository.
 2. Open `index.html` directly in a browser.
@@ -179,7 +194,7 @@ python3 tools/validate_config.py
 python3 -m compileall -q tools
 ```
 
-Open `tests/smoke.html` directly or through the local server. It displays browser assertions for mode order, i18n fallback, missing optional data, empty arrays, more than 12 projects, link safety, alt text, external-link protection, and duplicate DOM IDs.
+Open `tests/smoke.html` and `tests/setup-smoke.html` directly or through the local server. They display browser assertions for the homepage and the visual setup/export pipeline.
 
 The intentionally invalid fixture can confirm the validator's failure path:
 
