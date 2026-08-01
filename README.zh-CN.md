@@ -6,17 +6,39 @@ ScholarCanvas 是一个面向学生与研究者的双语、配置驱动学术个
 
 [打开可视化初始化器](https://owen2005-brilliant.github.io/ScholarCanvas/setup.html) · [可视化初始化指南](docs/visual-setup-guide.zh-CN.md) · [English README](README.md) · [学生示例](examples/student/README.md) · [研究者示例](examples/researcher/README.md) · [GitHub 仓库](https://github.com/Owen2005-brilliant/ScholarCanvas)
 
-## 最简单的使用方式
+## 快速开始
 
-1. 在 GitHub 点击 **Use this template** 创建自己的仓库。
-2. 下载或克隆仓库。
-3. 双击 `setup.html`。
-4. 在页面中填写资料，并实时预览 Student 或 Researcher 主页。
-5. 下载配置包；受支持的浏览器也可直接写入本地仓库。
-6. 将仓库推送到 GitHub。
-7. 在 **Settings → Pages** 中选择 **GitHub Actions**。
+1. 点击仓库右上角的 **Use this template**，创建自己的仓库。
+2. 下载或克隆自己的仓库。
+3. 双击 `setup.html`，或者运行：
 
-所有资料、头像、简历和分享封面都只在当前浏览器中处理，不会上传。搜索与分享信息会根据个人资料自动生成；高级用户仍可自定义或直接编辑 `data/*.js`。
+   ```bash
+   python3 -m http.server 8000
+   ```
+
+   然后访问 [http://localhost:8000/setup.html](http://localhost:8000/setup.html)。
+4. 在可视化页面中：
+   - 选择 Student 或 Researcher；
+   - 填写个人资料；
+   - 添加项目、论文和经历；
+   - 实时预览主页；
+   - 下载配置包，或者直接写入本地 ScholarCanvas 文件夹。
+5. 将生成的配置应用到仓库，并确认主页预览正常。
+6. 将代码推送到 GitHub。
+7. 打开 **Settings → Pages → Source → GitHub Actions**。
+8. 等待部署完成，即可访问自己的个人主页。
+
+`setup.html` 是推荐方式，手动编辑 `data/*.js` 是面向高级用户的备用方式。ScholarCanvas 不需要后端、不需要 Node.js、不需要数据库；所有填写的信息只在浏览器本地处理。没有论文的学生可以关闭 Publications。
+
+### 手动修改
+
+高级用户也可以直接编辑：
+
+- `data/site.js`
+- `data/profile.js`
+- `data/projects.js`
+- `data/publications.js`
+- `data/experience.js`
 
 ## 预览
 
@@ -62,26 +84,6 @@ ScholarCanvas 是一个面向学生与研究者的双语、配置驱动学术个
 | 页脚 | Campus Horizon | Research Night |
 
 Demo 默认允许实时切换模式。正式个人站点可关闭预览开关，只发布一种模式。
-
-## 使用此模板
-
-在 GitHub 仓库页面点击 **Use this template → Create a new repository**。随后更新 `data/` 下的配置、替换虚构示例素材，在 `data/site.js`、`robots.txt` 和 `sitemap.xml` 中填写你的正式站点地址，并在新仓库中启用 **Settings → Pages → GitHub Actions**。
-
-## 手动编辑：30 秒开始
-
-1. 下载或克隆仓库。
-2. 双击 `index.html`。
-3. 编辑 `data/profile.js`，刷新页面。
-4. 替换 `data/` 下其他虚构内容与 `assets/` 中的示例图。
-5. 发布前运行 `python3 tools/validate_config.py`。
-
-也可以启动本地静态服务器：
-
-```bash
-python3 -m http.server 8080
-```
-
-打开 `http://localhost:8080/`。整个项目没有安装命令和构建命令。
 
 ## 配置文件
 
