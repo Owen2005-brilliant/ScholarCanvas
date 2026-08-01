@@ -149,6 +149,21 @@
     safe("file:// preview origin allows only null origin", () => namespace.previewBridge.allowedOrigin("null") === (window.location.protocol === "file:"));
     safe("same HTTP origin is accepted", () => window.location.protocol === "file:" || namespace.previewBridge.allowedOrigin(window.location.origin));
     safe("preview update uses the same final serializer payload", () => { namespace.store.replace(validStudent); return namespace.previewBridge.payload().profile.name.en === namespace.serializer.buildPayload(validStudent, {}).profile.name.en; });
+    safe("preview messages carry selected avatar and CV files without changing the payload format", () => {
+      const avatar = new File(["avatar"], "avatar.svg", { type: "image/svg+xml" });
+      const cv = new File(["%PDF"], "cv.pdf", { type: "application/pdf" });
+      namespace.store.setRuntimeFile("avatar", avatar, "");
+      namespace.store.setRuntimeFile("cv", cv, "");
+      const message = namespace.previewBridge.message();
+      namespace.store.clearRuntimeFiles();
+      return message.type === "SCHOLAR_CANVAS_PREVIEW_UPDATE" && message.version === 1 && message.files.avatar === avatar && message.files.cv === cv && namespace.validators.validatePreviewPayload(message.payload);
+    });
+    safe("standalone preview URLs use unique handoff tokens without embedding profile data", () => {
+      const first = namespace.previewBridge.createHandoffToken();
+      const second = namespace.previewBridge.createHandoffToken();
+      const url = namespace.previewBridge.standaloneUrl(first);
+      return first !== second && url.includes(`handoff=${encodeURIComponent(first)}`) && !url.includes("Test%20User") && !url.includes("test%40example.com");
+    });
     safe("reduced-motion media query is available", () => typeof window.matchMedia === "function" && typeof window.matchMedia("(prefers-reduced-motion: reduce)").matches === "boolean");
     safe("setup layout has a 360px overflow guard", () => Array.from(document.styleSheets).some((sheet) => { try { return Array.from(sheet.cssRules || []).some((rule) => String(rule.cssText).includes("max-width: 390px")); } catch (_error) { return false; } }));
     safe("oversized CV fails validation", () => !namespace.validators.cvFile(new File([new Uint8Array(20 * 1024 * 1024 + 1)], "cv.pdf", { type: "application/pdf" })).valid);

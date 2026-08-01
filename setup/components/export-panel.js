@@ -35,6 +35,7 @@
             button(t(namespace.schema.copy.writeFolder, language), { icon: "folder", disabled: !result.valid || !fileSystemSupported || state.exportStatus === "working", dataset: { action: "write-folder" } })
           ),
           !fileSystemSupported ? h("p", { class: "setup-export-card__support", text: t(namespace.schema.copy.unsupportedFolder, language) }) : null,
+          h("p", { class: "setup-export-card__support", text: language === "en" ? "The new-tab preview uses the current form. index.html changes only after you apply or replace the exported files." : "新标签页预览会显示当前表单；只有应用或替换导出文件后，index.html 才会更新。" }),
           h("div", { id: "setup-export-progress", class: "setup-export-progress", hidden: state.exportStatus !== "working" }, h("span", { style: { width: "0%" } }), h("output", { text: language === "en" ? "Preparing files…" : "正在准备文件…" }))
         )
       ),

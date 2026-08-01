@@ -56,16 +56,18 @@
   function footer(state) {
     const language = state.language;
     const last = state.currentStep === namespace.schema.steps.length - 1;
+    const handoffToken = last ? namespace.previewBridge.createHandoffToken() : "";
     return h("footer", { class: "setup-editor-footer" },
       h("div", { class: "setup-editor-footer__tools" },
         h("button", { type: "button", class: "setup-text-button", dataset: { action: "restore" }, text: t(namespace.schema.copy.restore, language) }),
         h("span", { "aria-hidden": "true", text: "·" }),
         h("button", { type: "button", class: "setup-text-button", dataset: { action: "export-draft" }, text: t(namespace.schema.copy.exportDraft, language) }),
-        namespace.importer.hasDraft() ? h("button", { type: "button", class: "setup-text-button setup-text-button--danger", dataset: { action: "clear-draft" }, text: t(namespace.schema.copy.clearDraft, language) }) : null
+        namespace.importer.hasDraft() ? h("button", { type: "button", class: "setup-text-button setup-text-button--danger", dataset: { action: "clear-draft" }, text: t(namespace.schema.copy.clearDraft, language) }) : null,
+        last ? h("a", { class: "setup-text-button", href: "index.html", target: "_blank", rel: "noopener", title: language === "en" ? "Shows files already applied to this repository" : "显示已经写入当前仓库的配置", text: language === "en" ? "Open applied homepage" : "打开已应用配置的主页" }) : null
       ),
       h("div", { class: "setup-editor-footer__nav" },
         button(t(namespace.schema.copy.back, language), { icon: "arrowLeft", disabled: state.currentStep === 0, dataset: { action: "previous-step" } }),
-        !last ? button(t(namespace.schema.copy.continue, language), { variant: "primary", icon: "arrowRight", dataset: { action: "next-step" } }) : h("a", { class: "setup-button setup-button--primary", href: "index.html" }, h("span", { text: language === "en" ? "Open homepage" : "打开主页" }), icon("arrowRight"))
+        !last ? button(t(namespace.schema.copy.continue, language), { variant: "primary", icon: "arrowRight", dataset: { action: "next-step" } }) : h("a", { class: "setup-button setup-button--primary", href: namespace.previewBridge.standaloneUrl(handoffToken), target: "_blank", rel: "opener", dataset: { action: "open-standalone-preview", handoff: handoffToken } }, icon("eye"), h("span", { text: language === "en" ? "Preview in new tab" : "在新标签页预览" }))
       )
     );
   }
@@ -78,7 +80,7 @@
       h("div", { class: "setup-preview__stage" },
         h("div", { class: "setup-preview__browser" },
           h("div", { class: "setup-preview__browser-bar", "aria-hidden": "true" }, h("span"), h("span"), h("span"), h("code", { text: namespace.serializer.computeSiteUrl(state.site) })),
-          h("iframe", { id: "setup-preview-frame", title: language === "en" ? "ScholarCanvas live preview" : "ScholarCanvas 实时预览", src: "setup/preview/index.html?v=1.1.0", sandbox: "allow-scripts allow-same-origin" })
+          h("iframe", { id: "setup-preview-frame", title: language === "en" ? "ScholarCanvas live preview" : "ScholarCanvas 实时预览", src: "setup/preview/index.html?v=1.1.0-preview-4", sandbox: "allow-scripts allow-same-origin" })
         )
       )
     );
@@ -298,6 +300,10 @@
     else if (action === "preview-theme") { namespace.store.update("site.defaultTheme", target.dataset.value, { reason: "selection" }); render(); }
     else if (action === "preview-device") { namespace.store.update("previewDevice", target.dataset.value, { dirty: false, reason: "selection" }); render(); }
     else if (action === "refresh-preview") namespace.previewBridge.refresh();
+    else if (action === "open-standalone-preview") {
+      const opened = await namespace.previewBridge.prepareStandalone(target.dataset.handoff);
+      if (!opened) toast(language === "en" ? "The preview could not open. Allow pop-ups and try again." : "无法打开预览，请允许此页面打开新标签页后重试。", "error");
+    }
     else if (action === "mobile-pane") { namespace.store.update("mobilePane", target.dataset.pane, { dirty: false, reason: "selection" }); render(); }
     else if (action === "toggle-mobile-steps") {
       const sidebar = app.querySelector(".setup-sidebar");
@@ -391,7 +397,7 @@
   app.addEventListener("click", (event) => {
     const target = event.target.closest("[data-action]");
     if (!target || ["choose-source", "set-mode", "toggle-section"].includes(target.dataset.action) && (target.type === "radio" || target.type === "checkbox")) return;
-    event.preventDefault();
+    if (target.dataset.action !== "open-standalone-preview") event.preventDefault();
     handleAction(target);
   });
   app.addEventListener("focusout", (event) => {

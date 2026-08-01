@@ -20,6 +20,8 @@ Turn any of the eight modules on or off. Disabled content stays in the setup sta
 
 Choose the initial language, Light/Dark/System theme, and an accent color. The live preview is the real ScholarCanvas renderer inside an isolated iframe; setup data is serialized and sent through a versioned, origin-checked `postMessage` protocol. Switch Student/Researcher, Chinese/English, desktop/mobile, or refresh the preview from its toolbar.
 
+On **Review & Export**, **Preview in new tab** opens the current form through a one-time, origin-checked handoff, including selected local avatar and CV files. **Open applied homepage** reads `index.html`, so it shows only configuration files that have already been applied or replaced in the project.
+
 For GitHub Pages, enter the GitHub username and repository name. `username.github.io` produces a root URL; other repositories produce `https://username.github.io/repository/`. A complete custom HTTPS URL overrides the Pages URL. Canonical, robots, sitemap, Open Graph, and JSON-LD inputs use the same generated address.
 
 ## 5. Save or move a draft

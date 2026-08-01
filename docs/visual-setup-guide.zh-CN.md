@@ -20,6 +20,8 @@
 
 选择默认语言、浅色/深色/跟随系统主题和强调色。实时预览通过隔离的 iframe 使用真正的 ScholarCanvas 渲染器；配置经过稳定序列化后，通过校验来源、Origin、类型、版本和载荷的 `postMessage` 协议更新。预览工具栏可切换学生/研究者、中/英文、桌面/手机并刷新。
 
+在“检查与导出”步骤中，“在新标签页预览”会通过一次性、校验 Origin 的交接把当前表单传给预览页，也会带上本地选择的头像和简历文件。“打开已应用配置的主页”读取的是 `index.html`，因此只展示已经应用或替换到项目中的配置文件。
+
 填写 GitHub 用户名与仓库名后，`username.github.io` 仓库生成根地址，其他仓库生成 `https://username.github.io/repository/`。完整的自定义 HTTPS 地址优先于 Pages 地址。Canonical、robots、sitemap、Open Graph 与 JSON-LD 均使用同一正式地址。
 
 ## 5. 保存与迁移草稿
