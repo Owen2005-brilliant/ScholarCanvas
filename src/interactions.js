@@ -226,6 +226,11 @@
   function updateCurrentSectionByPosition() {
     const sections = Array.from(document.querySelectorAll("main section[id]"));
     if (!sections.length) return;
+    const atPageEnd = window.scrollY + window.innerHeight >= document.documentElement.scrollHeight - 2;
+    if (atPageEnd) {
+      updateActiveSection(sections[sections.length - 1].id);
+      return;
+    }
     const anchor = window.innerHeight * 0.28;
     let current = sections[0];
     let currentTop = -Infinity;
