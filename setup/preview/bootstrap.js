@@ -54,6 +54,14 @@
   }
 
   window.addEventListener("message", onMessage);
+  document.addEventListener("click", (event) => {
+    const link = event.target.closest && event.target.closest('a[href^="#"]');
+    if (!link) return;
+    const target = document.getElementById(link.getAttribute("href").slice(1));
+    if (!target) return;
+    event.preventDefault();
+    target.scrollIntoView({ block: "start", behavior: namespace.accessibility && namespace.accessibility.prefersReducedMotion() ? "auto" : "smooth" });
+  });
   document.addEventListener("DOMContentLoaded", () => {
     if (pending) applyPayload(pending);
     window.parent.postMessage({ type: "SCHOLAR_CANVAS_PREVIEW_READY", version: 1 }, window.location.protocol === "file:" ? "*" : window.location.origin);

@@ -78,7 +78,7 @@
       h("div", { class: "setup-preview__stage" },
         h("div", { class: "setup-preview__browser" },
           h("div", { class: "setup-preview__browser-bar", "aria-hidden": "true" }, h("span"), h("span"), h("span"), h("code", { text: namespace.serializer.computeSiteUrl(state.site) })),
-          h("iframe", { id: "setup-preview-frame", title: language === "en" ? "ScholarCanvas live preview" : "ScholarCanvas 实时预览", src: "setup/preview/index.html", sandbox: "allow-scripts allow-same-origin" })
+          h("iframe", { id: "setup-preview-frame", title: language === "en" ? "ScholarCanvas live preview" : "ScholarCanvas 实时预览", src: "setup/preview/index.html?v=1.1.0", sandbox: "allow-scripts allow-same-origin" })
         )
       )
     );
